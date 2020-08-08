@@ -1,24 +1,23 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import { ThemeProvider, CssBaseline, Backdrop, CircularProgress } from '@material-ui/core';
+import { ThemeProvider, CssBaseline } from '@material-ui/core';
 import './index.css';
+import './bg_offline.jpg';
 import theme from './theme';
 import * as serviceWorker from './serviceWorker';
+import App from './App'
 
-let App = React.lazy(() => import('./App'))
+window.addEventListener('load', () => {
+	if (!navigator.onLine){
+		document.body.style.backgroundImage = "url(/static/media/bg_offline.jpg) !important"
+	}
+})
 
 ReactDOM.render(
 	<React.StrictMode>
 		<ThemeProvider theme={theme}>
 			<CssBaseline />
-			<Suspense
-				fallback={
-					<Backdrop open={true}>
-						<CircularProgress />
-					</Backdrop>
-				}>
 				<App />
-			</Suspense>
 		</ThemeProvider>
 	</React.StrictMode>,
 	document.getElementById('root')

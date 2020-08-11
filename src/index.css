@@ -5,10 +5,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url(https://bing.biturl.top/?resolution=1920&format=image&index=0&mkt=zh-CN), url(/bg_offline.jpg);
+  background-image: url(/bg_offline.jpg);
   background-repeat: no-repeat;
   background-position: center;
-  background-blend-mode: multiply;
+  backdrop-filter: opacity(0.5);
   background-size: cover;
   height: 100vh;
 }

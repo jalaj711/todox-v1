@@ -7,8 +7,14 @@ import * as serviceWorker from './serviceWorker';
 import App from './App'
 
 window.addEventListener('load', () => {
-	if (!navigator.onLine){
-		document.body.style.backgroundImage = "url(/static/media/bg_offline.jpg) !important"
+	if (navigator.onLine){
+		let img = new Image();
+		console.log("Loading")
+		img.src = "https://bing.biturl.top/?resolution=1920&format=image&index=0&mkt=zh-CN";
+		img.onload = () => {
+			console.log("Loaded");
+			document.body.style.backgroundImage = "url(" + img.src + ")";
+		};
 	}
 })
 

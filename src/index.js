@@ -1,18 +1,13 @@
-import React, { Suspense } from "react"
+import React from "react"
 import ReactDOM from "react-dom"
-import {
-  ThemeProvider,
-  CssBaseline,
-  Backdrop,
-  CircularProgress,
-} from "@material-ui/core"
+import { ThemeProvider, CssBaseline } from "@material-ui/core"
 import theme from "./theme"
 import * as serviceWorker from "./serviceWorker"
 import { HashRouter as Router } from "react-router-dom"
-import Home from './pages/home';
+import App from "./pages/app"
 
 window.addEventListener("load", () => {
-  if (navigator.onLine && window.location.pathname !== '/') {
+  if (navigator.onLine && window.location.pathname !== "/") {
     let img = new Image()
     img.src =
       "https://bing.biturl.top/?resolution=1920&format=image&index=0&mkt=zh-CN"
@@ -27,15 +22,7 @@ ReactDOM.render(
     <Router>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Suspense
-          fallback={
-            <Backdrop open={true}>
-              <CircularProgress />
-            </Backdrop>
-          }
-        >
-          <Home />
-        </Suspense>
+        <App />
       </ThemeProvider>
     </Router>
   </React.StrictMode>,

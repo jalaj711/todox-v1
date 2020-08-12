@@ -2,14 +2,36 @@ import React, { Suspense } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import { Backdrop, CircularProgress } from "@material-ui/core"
 import { Switch, Route } from "react-router-dom"
+import Loadable from "react-loadable"
 import theme from "../theme"
 
 //Lazy load components
-let MobileDrawer = React.lazy(() => import("../components/MobileDrawer"))
-let DesktopDrawer = React.lazy(() => import("../components/DesktopDrawer"))
+let MobileDrawer = Loadable({
+  loading: () => (
+    <Backdrop>
+      <CircularProgress />
+    </Backdrop>
+  ),
+  loader: () => import("../components/MobileDrawer"),
+})
+let DesktopDrawer = Loadable({
+  loading: () => (
+    <Backdrop>
+      <CircularProgress />
+    </Backdrop>
+  ),
+  loader: () => import("../components/DesktopDrawer"),
+})
 
 //Lazy load pages
-let Index = React.lazy(() => import("../pages/index"))
+let Index = Loadable({
+  loading: () => (
+    <Backdrop>
+      <CircularProgress />
+    </Backdrop>
+  ),
+  loader: () => import("./index"),
+})
 
 const drawerWidth = 240
 

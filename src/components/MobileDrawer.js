@@ -28,7 +28,7 @@ import {
     InfoOutlined as InfoIcon
   } from "@material-ui/icons"
 
-import theme from "./theme"
+import theme from "../theme"
 
 
 const useStyles = makeStyles(theme => ({

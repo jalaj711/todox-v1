@@ -24,13 +24,18 @@ import {
   AttachMoneyOutlined as BillsIcon,
   ShoppingCartOutlined as ShoppingIcon,
   WorkOutline as WorkIcon,
-  InfoOutlined as InfoIcon
+  InfoOutlined as InfoIcon,
 } from "@material-ui/icons"
+
+import { NavLink } from "react-router-dom"
 
 const drawerWidth = 240
 
 const useStyles = makeStyles(theme => ({
   drawer: {
+	'& a': {
+		color: theme.palette.text.primary,
+	},
     [theme.breakpoints.up("sm")]: {
       width: drawerWidth,
       flexShrink: 0,
@@ -50,6 +55,13 @@ const useStyles = makeStyles(theme => ({
   },
   grow: {
     flexGrow: 1,
+  },
+  active: {
+    "& .MuiListItem-root": {
+      background: "rgba(33, 29, 33, 0.45)",
+      borderTopRightRadius: 20,
+      borderBottomRightRadius: 20,
+    },
   },
 }))
 
@@ -88,26 +100,49 @@ export default function DesktopMenu() {
             <div className={classes.toolbar} />
             <Divider />
             <List>
-              <ListItem button>
-                <ListItemIcon><DayIcon /></ListItemIcon>
-                <ListItemText primary={"My Day"} />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon><StarIcon /></ListItemIcon>
-                <ListItemText primary={"Starred Tasks"} />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon><BillsIcon /></ListItemIcon>
-                <ListItemText primary={"Bills"} />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon><ShoppingIcon /></ListItemIcon>
-                <ListItemText primary={"Shopping List"} />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon><WorkIcon /></ListItemIcon>
-                <ListItemText primary={"Work"} />
-              </ListItem>
+              <NavLink to="/lists/today" activeClassName={classes.active}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <DayIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"My Day"} />
+                </ListItem>
+              </NavLink>
+              <NavLink to="/lists/starred" activeClassName={classes.active}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <StarIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Starred Tasks"} />
+                </ListItem>
+              </NavLink>
+              <NavLink to="/lists/bills" activeClassName={classes.active}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <BillsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Bills"} />
+                </ListItem>
+              </NavLink>
+              <NavLink
+                to="/lists/shopping"
+                activeClassName={classes.active}
+              >
+                <ListItem button>
+                  <ListItemIcon>
+                    <ShoppingIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Shopping List"} />
+                </ListItem>
+              </NavLink>
+              <NavLink to="/lists/work" activeClassName={classes.active}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <WorkIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Work"} />
+                </ListItem>
+              </NavLink>
             </List>
             <Divider />
             <List>
@@ -130,13 +165,15 @@ export default function DesktopMenu() {
                 <ListItemText primary={"Missing"} />
               </ListItem>
             </List>
-			<Divider />
-			<List>
-				<ListItem button>
-					<ListItemIcon><InfoIcon /></ListItemIcon>
-					<ListItemText primary="About us" />
-				</ListItem>
-			</List>
+            <Divider />
+            <List>
+              <ListItem button>
+                <ListItemIcon>
+                  <InfoIcon />
+                </ListItemIcon>
+                <ListItemText primary="About us" />
+              </ListItem>
+            </List>
           </div>
         </Drawer>
       </nav>

@@ -2,36 +2,15 @@ import React, { Suspense } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import { Backdrop, CircularProgress } from "@material-ui/core"
 import { Switch, Route } from "react-router-dom"
-import Loadable from "react-loadable"
 import theme from "../theme"
 
 //Lazy load components
-let MobileDrawer = Loadable({
-  loading: () => (
-    <Backdrop>
-      <CircularProgress />
-    </Backdrop>
-  ),
-  loader: () => import("../components/MobileDrawer"),
-})
-let DesktopDrawer = Loadable({
-  loading: () => (
-    <Backdrop>
-      <CircularProgress />
-    </Backdrop>
-  ),
-  loader: () => import("../components/DesktopDrawer"),
-})
+let MobileDrawer = React.lazy(() => import("../components/MobileDrawer"))
+let DesktopDrawer = React.lazy(() => import("../components/DesktopDrawer"))
 
 //Lazy load pages
-let Index = Loadable({
-  loading: () => (
-    <Backdrop>
-      <CircularProgress />
-    </Backdrop>
-  ),
-  loader: () => import("./index"),
-})
+let Index = React.lazy(() => import("./index"))
+let Lists = React.lazy(() => import("./lists"))
 
 const drawerWidth = 240
 
@@ -80,6 +59,7 @@ export default function Home() {
           <div className={classes.toolbar} />
           <Switch>
             <Route path="/" exact children={() => <Index />} />
+            <Route path="/lists/:id" children={() => <Lists />} />
           </Switch>
         </main>
       </Suspense>

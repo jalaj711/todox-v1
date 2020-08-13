@@ -6,15 +6,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
-    - name: Install Dependencies
-      uses: actions/setup-node@v1
+    - uses: actions/setup-node@v1
       with:
         node-version: 10.x
+
+    - name: Install Dependencies
       run: npm install
       
     - name: Build
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10.x
       run: npm run build

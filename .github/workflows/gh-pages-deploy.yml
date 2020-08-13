@@ -9,10 +9,12 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 10.x
-    - name: Configure Git
+    - name: Configure Git Username
       run: |
         git config --global user.name ${{ secrets.NAME }}
         git config --global user.email ${{ secrets.EMAIL }}
+    - name: Authenticate Git
+      run: |
         git config --global user.actor ${{ secrets.ACTOR }}
         git config --global user.token ${{ secrets.GITHUB_TOKEN }}
 

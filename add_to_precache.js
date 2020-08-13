@@ -2,7 +2,7 @@ let fs = require('fs');
 let build_dir = "./build";
 let precache_re = /precache-manifest\.[a-zA-Z0-9]*\.js/
 
-let urls_to_add = ['/bg_offline.jpg']
+let urls_to_add = ['/todox/bg_offline.jpg']
 
 function generate_revision(){
     var chars = "abcdefghijklmnopqrstuvwxyzABCDEEFGHIJKLMNOPQRSTUVWXYZ0123456789".split('');

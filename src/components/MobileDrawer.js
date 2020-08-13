@@ -34,6 +34,9 @@ import theme from "../theme"
 const useStyles = makeStyles(theme => ({
   drawer: {
     width: 240,
+    "& a": {
+      color: theme.palette.text.primary,
+    },
   },
   appBar: {
     background: "transparent",
@@ -46,7 +49,7 @@ const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
   },
-  
+
   active: {
     "& .MuiListItem-root": {
       background: "rgba(33, 29, 33, 0.45)",

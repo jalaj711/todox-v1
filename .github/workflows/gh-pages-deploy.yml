@@ -9,6 +9,10 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 10.x
+    - name: Configure Git
+      run: |
+      git config --global user.name ${{ secrets.NAME }}
+      git config --global user.email ${{ secrets.EMAIL }}
 
     - name: Install Dependencies
       run: npm install

@@ -1,23 +1,26 @@
-name: "Deploy to GitHub Pages"
-on: push
-jobs: 
+name: Deploy
+on:
+  push:
+    branches:
+      - master
+jobs:
   deploy:
-    name: Deploy to Github-Pages
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
       with:
-        node-version: 10.x
-    - name: Configure Git
-      run: |
-        git config --global user.name ${{ secrets.NAME }}
-        git config --global user.email ${{ secrets.EMAIL }}
-        git config --global user.actor ${{ secrets.ACTOR }}
-        git config --global user.token ${{ secrets.GITHUB_TOKEN }}
-
+        node-version: ${{ matrix.node-version }}
     - name: Install Dependencies
       run: npm install
-
+    - name: Build
+      run: npm run build
     - name: Deploy
-      run: npm run deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        deploy_key: ${{ secrets.DEPLOY_KEY }}
+        publish_dir: ./build

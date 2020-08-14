@@ -5,7 +5,7 @@ import theme from "./theme"
 import * as serviceWorker from "./serviceWorker"
 import { HashRouter as Router } from "react-router-dom"
 import App from "./pages/app"
-/*
+
 window.addEventListener("load", () => {
   if (navigator.onLine && window.location.hash !== "#/") {
     let img = new Image()
@@ -16,7 +16,7 @@ window.addEventListener("load", () => {
     }
   }
 })
-*/
+
 
 ReactDOM.render(
   <React.StrictMode>

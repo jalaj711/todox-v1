@@ -5,9 +5,9 @@ import theme from "./theme"
 import * as serviceWorker from "./serviceWorker"
 import { HashRouter as Router } from "react-router-dom"
 import App from "./pages/app"
-
+/*
 window.addEventListener("load", () => {
-  if (navigator.onLine && window.location.pathname !== "/") {
+  if (navigator.onLine && window.location.hash !== "#/") {
     let img = new Image()
     img.src =
       "https://bing.biturl.top/?resolution=1920&format=image&index=0&mkt=zh-CN"
@@ -16,6 +16,7 @@ window.addEventListener("load", () => {
     }
   }
 })
+*/
 
 ReactDOM.render(
   <React.StrictMode>

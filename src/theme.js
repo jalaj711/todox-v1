@@ -9,10 +9,10 @@ const theme = createMuiTheme({
   palette: {
     type: "dark",
     primary: {
-      main: "#3874b2",
+      main: "#1c77ac",
     },
     secondary: {
-      main: '#DC9CFD',
+      main: '#fc5226',
     },
     contrastThreshold: 3,
     tonalOffset: 0.2,
@@ -26,6 +26,7 @@ light yellow: #FFE088
 purplish: #DC9CFD
 green: #9CE47C
 red: #F56A4E
+YELLOW: #f7c331
 */
 
 export default theme;

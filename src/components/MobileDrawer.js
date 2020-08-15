@@ -52,7 +52,7 @@ const useStyles = makeStyles(theme => ({
 
   active: {
     "& .MuiListItem-root": {
-      background: "rgba(33, 29, 33, 0.45)",
+      background: `${theme.palette.primary.light}`,
       borderTopRightRadius: 20,
       borderBottomRightRadius: 20,
     },

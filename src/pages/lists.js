@@ -13,6 +13,7 @@ import {
 //import { Link } from "react-router-dom"
 import {
   StarBorderOutlined,
+  Star,
   DeleteOutlineOutlined,
   MoreVertOutlined,
   AccessAlarmOutlined,
@@ -33,6 +34,10 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     padding: 8,
     marginTop: 8,
+  },
+  starred: {
+    fill: "#f7c331",
+    stroke: "#f7c331",
   },
 }))
 
@@ -55,7 +60,11 @@ function TodoItem(props) {
         <Typography>This is a todo</Typography>
       </div>
       <IconButton aria-label="Star this task">
-        <StarBorderOutlined />
+        {props.starred ? (
+          <Star className={classes.starred} />
+        ) : (
+          <StarBorderOutlined />
+        )}
       </IconButton>
       <IconButton
         aria-haspopup="true"
@@ -106,9 +115,9 @@ export default function Home() {
   return (
     <div className={classes.root}>
       <TodoItem />
+      <TodoItem starred />
       <TodoItem />
-      <TodoItem />
-      <TodoItem />
+      <TodoItem starred />
     </div>
   )
 }

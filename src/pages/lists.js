@@ -21,6 +21,8 @@ import {
   ViewDayOutlined,
 } from "@material-ui/icons"
 
+import database from  "../database";
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: "block",
@@ -44,6 +46,7 @@ const useStyles = makeStyles(theme => ({
 function TodoItem(props) {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [starred, setStarred] = React.useState(props.task.starred)
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -53,14 +56,18 @@ function TodoItem(props) {
     setAnchorEl(null)
   }
 
+  const toggleStar = () => {
+    setStarred(!starred);
+  }
+
   return (
     <Paper className={classes.paper}>
-      <Checkbox color="secondary" aria-label="Mark as done" />
+      <Checkbox color="primary" aria-label="Mark as done" checked={props.tasks.done}/>
       <div className={classes.grow}>
-        <Typography>This is a todo</Typography>
+        <Typography>{props.task.text}</Typography>
       </div>
-      <IconButton aria-label="Star this task">
-        {props.starred ? (
+      <IconButton aria-label="Star this task" onClick={toggleStar}>
+        {starred ? (
           <Star className={classes.starred} />
         ) : (
           <StarBorderOutlined />
@@ -111,13 +118,22 @@ function TodoItem(props) {
 
 export default function Home() {
   const classes = useStyles()
+  let listname = window.location.hash.split('/');
+  listname = listname[listname.length - 1];
+
+  let db = new database();
+  let tasks = db.getMultipleByKey('tasks', 'parent', listname);
 
   return (
     <div className={classes.root}>
-      <TodoItem />
-      <TodoItem starred />
-      <TodoItem />
-      <TodoItem starred />
+      {
+        tasks === [] ?
+          <Typography>
+            You do not have any tasks in this lists yet
+          </Typography>
+          :
+          tasks.forEach((task) => <TodoItem task={task} />)
+      }
     </div>
   )
 }

@@ -1,31 +1,159 @@
-import React from "react"
-import { makeStyles } from "@material-ui/core/styles"
-import {
-  Paper,
-  Checkbox,
-  Typography,
-  IconButton,
-  Menu,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-} from "@material-ui/core"
-//import { Link } from "react-router-dom"
-import {
-  StarBorderOutlined,
-  Star,
-  DeleteOutlineOutlined,
-  MoreVertOutlined,
-  AccessAlarmOutlined,
-  EditOutlined,
-  ViewDayOutlined,
-} from "@material-ui/icons"
-
+import React, { Suspense } from "react"
+import { makeStyles, withStyles } from "@material-ui/core/styles"
+import { Paper, Typography, Fab } from "@material-ui/core"
+import { ErrorOutlineOutlined, AddOutlined } from "@material-ui/icons"
+import { Link } from "react-router-dom"
 import { Skeleton } from "@material-ui/lab"
 
 import database from "../database"
 
-const useStyles = makeStyles(theme => ({
+/**
+ * Lazy load the TodoItem component becaus the list may be empty
+ * or it may even not exist
+ */
+let TodoItem = React.lazy(() => import("../components/TodoItem"))
+
+/**
+ * This component provides a skeleton animation until
+ * the actual todos are being loaded
+ */
+let Loader = () => {
+  let classes = makeStyles(theme => ({
+    paper: {
+      width: "-webkit-fill-available",
+      alignItems: "center",
+      padding: 8,
+      marginTop: 8,
+      display: "block",
+    },
+  }))()
+  return (
+    <Paper className={classes.paper}>
+      <Skeleton width={0.5 * window.innerWidth} animation="wave" />
+      <Skeleton width={0.15 * window.innerWidth} animation="wave" />
+    </Paper>
+  )
+}
+
+/**
+ * This component renders the whole actual lis of todos
+ * for the given list. It i separate because it uses Suspense
+ * as the TodoItem component  may not be loaded yet (Its being
+ * lazy loaded)
+ *
+ * @param {*} props
+ */
+let TodoList = props => (
+  <Suspense fallback={<Loader />}>
+    {props.forEach(task => (
+      <TodoItem task={task} />
+    ))}
+  </Suspense>
+)
+
+class List extends React.Component {
+  /**
+   * This component is the actual 'list' where all the individual
+   * components are rendered.
+   *
+   * @param {*} props
+   */
+  constructor(props) {
+    super(props)
+    this.classes = this.props.classes
+    this.state = {
+      error: false,
+      loaded: false,
+      tasks: [],
+    }
+    this.listname = props.match.params.id
+  }
+
+  /**
+   * This function executes the tasks that we should do only
+   * once the component has been mounted, otherwise we won't
+   * be able to update the state.
+   *
+   * It accesses the database and searches for the tasks in this list
+   */
+  componentDidMount() {
+    let db = new database()
+
+    //When the database has been loaded
+    db.onsuccess = () => {
+      //Check whether this list exists or not
+      db.get("lists", this.listname).onsuccess = evt => {
+        if (evt.target.result) {
+          //Get the tasks
+          let tasks = db.getMultipleByKey("tasks", "parent", this.listname)
+
+          //Change the state
+          this.setState({
+            //Create an error if there are no tasks in the list
+            error:
+              tasks.length === 0 ? "You have no tasks in this list yet" : null,
+            loaded: true,
+            tasks: tasks,
+          })
+        } else {
+          // The requested list could not be found. Show an error
+          this.setState({
+            tasks: [],
+            loaded: true,
+            error: "This list was not found, please create it first",
+          })
+        }
+      }
+    }
+  }
+
+  render() {
+    return (
+      <div className={this.classes.root}>
+        {
+          //Check whether data is available or not and show content likewise
+          this.state.loaded ? (
+            //Look for errors
+            this.state.error ? (
+              <div className={this.classes.error}>
+                <ErrorOutlineOutlined className={this.classes.icon} />
+                <Typography>{this.state.error}</Typography>
+              </div>
+            ) : (
+              //Load the todos
+              <TodoList tasks={this.state.tasks} />
+            )
+          ) : (
+            //Show the loader
+            <Loader />
+          )
+        }
+
+        {
+          /**
+           * This is a fab to add more tasks to this list.
+           * It shouldn't show up if the list is non-existent
+           */
+          this.state.error ===
+          "This list was not found, please create it first" ? (
+            ""
+          ) : (
+            <Link to={`/new/${this.listname}`} className={this.classes.fab}>
+              <Fab color="primary" aria-label="Add a todo to this list">
+                <AddOutlined />
+              </Fab>
+            </Link>
+          )
+        }
+      </div>
+    )
+  }
+}
+
+/**
+ * Get the list styled and export it.
+ */
+export default withStyles(_theme => ({
   root: {
     display: "block",
   },
@@ -39,115 +167,19 @@ const useStyles = makeStyles(theme => ({
     padding: 8,
     marginTop: 8,
   },
-  starred: {
-    fill: "#f7c331",
-    stroke: "#f7c331",
+  icon: {
+    width: "60%",
+    height: "60%",
   },
-}))
-
-function TodoItem(props) {
-  const classes = useStyles()
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const [starred, setStarred] = React.useState(props.task.starred)
-
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
-
-  const toggleStar = () => {
-    setStarred(!starred)
-  }
-
-  return (
-    <Paper className={classes.paper}>
-      <Checkbox
-        color="primary"
-        aria-label="Mark as done"
-        checked={props.tasks.done}
-      />
-      <div className={classes.grow}>
-        <Typography>{props.task.text}</Typography>
-      </div>
-      <IconButton aria-label="Star this task" onClick={toggleStar}>
-        {starred ? (
-          <Star className={classes.starred} />
-        ) : (
-          <StarBorderOutlined />
-        )}
-      </IconButton>
-      <IconButton
-        aria-haspopup="true"
-        onClick={handleClick}
-        aria-label="Show more options"
-      >
-        <MoreVertOutlined />
-      </IconButton>
-      <Menu
-        id="simple-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <MenuItem onClick={handleClose} aria-label="View Details">
-          <ListItemIcon>
-            <ViewDayOutlined />
-          </ListItemIcon>
-          <ListItemText primary="Details" />
-        </MenuItem>
-        <MenuItem onClick={handleClose} aria-label="Edit">
-          <ListItemIcon>
-            <EditOutlined />
-          </ListItemIcon>
-          <ListItemText primary="Edit" />
-        </MenuItem>
-        <MenuItem onClick={handleClose} aria-label="Reminders">
-          <ListItemIcon>
-            <AccessAlarmOutlined />
-          </ListItemIcon>
-          <ListItemText primary="Add/Remove a reminder" />
-        </MenuItem>
-        <MenuItem onClick={handleClose} aria-label="Delete this task">
-          <ListItemIcon>
-            <DeleteOutlineOutlined />
-          </ListItemIcon>
-          <ListItemText primary="Delete" />
-        </MenuItem>
-      </Menu>
-    </Paper>
-  )
-}
-
-export default function Home() {
-  const classes = useStyles()
-  const [state, setState] = React.useState({loaded: false, tasks: []});
-  let listname = window.location.hash.split("/")
-  listname = listname[listname.length - 1]
-
-  let db = new database()
-  db.onsuccess = () => {
-    setState({loaded: true, tasks: db.getMultipleByKey("tasks", "parent", listname)})
-  }
-
-  return (
-    <div className={classes.root}>
-      {state.loaded ? (
-        state.tasks.length === 0 ? (
-          <Typography>You do not have any tasks in this list yet</Typography>
-        ) : (
-          state.tasks.forEach(task => <TodoItem task={task} />)
-        )
-      ) : (
-        <Paper className={classes.paper}>
-          <Skeleton />
-          <Skeleton width={80} />
-        </Paper>
-
-      )}
-    </div>
-  )
-}
+  error: {
+    width: "-webkit-fill-available",
+    background: "transparent",
+    opacity: 0.7,
+    textAlign: "center",
+  },
+  fab: {
+    position: "fixed",
+    bottom: 25,
+    right: 25,
+  },
+}))(List)

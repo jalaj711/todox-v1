@@ -58,8 +58,8 @@ export default function Home() {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
-            <Route path="/" exact children={() => <Index />} />
-            <Route path="/lists/:id" children={() => <Lists />} />
+            <Route path="/" exact component={Index} />
+            <Route path="/lists/:id" component={Lists} />
           </Switch>
         </main>
       </Suspense>

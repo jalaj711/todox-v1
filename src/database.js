@@ -3,7 +3,7 @@ class db {
    *
    * @param {String} databasename Name of the database to open
    * Creates a database object with the name provided.
-   * Default name: todox:v1
+   * Default name: todox-v1
    */
   constructor(databasename) {
     //Database name
@@ -13,46 +13,46 @@ class db {
     this.request = window.indexedDB.open(databasename)
 
     //Handle some events
-    this.request.onsuccess = this.success
-    this.request.onerror = this.error
-    this.request.onupgradeneeded = this.upgradeneeded
+    this.request.onsuccess = evt => {
+      this.db = evt.target.result
+      try {
+        this.onsuccess(evt)
+      } catch (e) {
+        console.warn(e)
+        console.log("[indexedDB] DB creation success")
+      }
+    }
+    this.request.onerror = evt => {
+      try {
+        this.onerror(evt)
+      } catch (e) {
+        console.warn(e)
+        console.log("[indexedDB] Database error:" + this.request.errorCode)
+      }
+    }
+    this.request.onupgradeneeded = evt => {
+      this.db = evt.target.result
+      this.objectStores = {}
+
+      //Create object stores
+      this.objectStores.lists = this.db.createObjectStore("lists", {
+        keyPath: "id",
+      })
+      this.objectStores.tasks = this.db.createObjectStore("tasks", {
+        keyPath: "id",
+      })
+      this.objectStores.meta = this.db.createObjectStore("meta")
+
+      //Create search indexes
+      this.objectStores.lists.createIndex("name", "name", { unique: true })
+      this.objectStores.tasks.createIndex("name", "name", { unique: false })
+      this.objectStores.tasks.createIndex("date", "date", { unique: false })
+      this.objectStores.tasks.createIndex("starred", "starred", {
+        unique: false,
+      })
+    }
 
     this.objectStores = {}
-  }
-  /**
-   *
-   * @param {*} evt This function is run whenever upgrade is needed on the database
-   */
-  upgradeneeded(evt) {
-    let db = evt.target.result;
-    this.objectStores = {}
-    
-    //Create object stores
-    this.objectStores.lists = db.createObjectStore("lists", { keyPath: "id" })
-    this.objectStores.tasks = db.createObjectStore("tasks", { keyPath: "id" })
-    this.objectStores.meta = db.createObjectStore("meta")
-
-    //Create search indexes
-    this.objectStores.lists.createIndex("name", "name", { unique: true })
-    this.objectStores.tasks.createIndex("name", "name", { unique: false })
-    this.objectStores.tasks.createIndex("date", "date", { unique: false })
-    this.objectStores.tasks.createIndex("starred", "starred", { unique: false })
-
-    this.db = db;
-  }
-
-  /**
-   *
-   * @param {*} evt This function handles the errors that are raised in the current database
-   */
-  error(evt) {
-    console.log("[indexedDB] Database error:" + this.request.errorCode)
-  }
-
-  //Database success event
-  success(evt) {
-    this.db = evt.target.result;
-    console.log("[indexedDB] DB creation success")
   }
 
   /**
@@ -67,7 +67,7 @@ class db {
    * @returns {IDBRequest} The request event of objectStore.add method
    */
   add(objectStore, data, onerror, onsuccess) {
-    let transaction = this.db.transacion([objectStore], "readwrite")
+    let transaction = this.db.transaction([objectStore], "readwrite")
     transaction.onerrror =
       onerror || (evt => console.log("[indexedDB] DB Add error: " + evt))
     transaction.oncomplete =
@@ -89,7 +89,7 @@ class db {
    * @returns {IDBRequest} The delete request
    */
   delete(objStore, id, onerror, onsuccess) {
-    let transaction = this.db.transacion([objStore], "readwrite")
+    let transaction = this.db.transaction([objStore], "readwrite")
     transaction.onerrror =
       onerror || (evt => console.log("[indexedDB] DB Add error: " + evt))
     transaction.oncomplete =
@@ -109,7 +109,7 @@ class db {
    * @returns {IDBRequest} The get request of the get function
    */
   get(objStore, id, onerror, onsuccess) {
-    let transaction = this.db.transacion([objStore], "readwrite")
+    let transaction = this.db.transaction([objStore], "readwrite")
     transaction.onerrror =
       onerror || (evt => console.log("[indexedDB] DB Add error: " + evt))
     transaction.oncomplete =
@@ -132,7 +132,7 @@ class db {
    * @returns {IDBRequest} The update request
    */
   update(objStore, id, newData, onsuccess, onerror) {
-    let transaction = this.db.transacion([objStore], "readwrite")
+    let transaction = this.db.transaction([objStore], "readwrite")
     transaction.onerrror =
       onerror || (evt => console.log("[indexedDB] DB Add error: " + evt))
     transaction.oncomplete =
@@ -160,7 +160,7 @@ class db {
    * @returns {IDBRequest} Request of the get request
    */
   getByIndex(objStore, index, value, onerror, onsuccess) {
-    let transaction = this.db.transacion([objStore], "readwrite")
+    let transaction = this.db.transaction([objStore], "readwrite")
     transaction.onerrror =
       onerror || (evt => console.log("[indexedDB] DB Add error: " + evt))
     transaction.oncomplete =
@@ -184,8 +184,7 @@ class db {
    * @returns {Array}
    */
   getMultipleByKey(objStore, key, value, limit) {
-    console.log(this)
-    let store = this.db.transaction([objStore]).objctStore(objStore)
+    let store = this.db.transaction([objStore]).objectStore(objStore)
     let matched = []
 
     store.openCursor().onsucces = evt => {
@@ -229,7 +228,7 @@ class db {
    * @returns {Array}
    */
   getMultipleByFilters(objStore, key, value, limit) {
-    let store = this.db.transacion([objStore]).objctStore(objStore)
+    let store = this.db.transaction([objStore]).objectStore(objStore)
     let matched = []
 
     store.openCursor().onsucces = evt => {
@@ -278,4 +277,4 @@ class db {
   }
 }
 
-export default db;
+export default db

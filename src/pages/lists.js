@@ -21,7 +21,9 @@ import {
   ViewDayOutlined,
 } from "@material-ui/icons"
 
-import database from  "../database";
+import { Skeleton } from "@material-ui/lab"
+
+import database from "../database"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -57,12 +59,16 @@ function TodoItem(props) {
   }
 
   const toggleStar = () => {
-    setStarred(!starred);
+    setStarred(!starred)
   }
 
   return (
     <Paper className={classes.paper}>
-      <Checkbox color="primary" aria-label="Mark as done" checked={props.tasks.done}/>
+      <Checkbox
+        color="primary"
+        aria-label="Mark as done"
+        checked={props.tasks.done}
+      />
       <div className={classes.grow}>
         <Typography>{props.task.text}</Typography>
       </div>
@@ -118,22 +124,30 @@ function TodoItem(props) {
 
 export default function Home() {
   const classes = useStyles()
-  let listname = window.location.hash.split('/');
-  listname = listname[listname.length - 1];
+  const [state, setState] = React.useState({loaded: false, tasks: []});
+  let listname = window.location.hash.split("/")
+  listname = listname[listname.length - 1]
 
-  let db = new database();
-  let tasks = db.getMultipleByKey('tasks', 'parent', listname);
+  let db = new database()
+  db.onsuccess = () => {
+    setState({loaded: true, tasks: db.getMultipleByKey("tasks", "parent", listname)})
+  }
 
   return (
     <div className={classes.root}>
-      {
-        tasks === [] ?
-          <Typography>
-            You do not have any tasks in this lists yet
-          </Typography>
-          :
-          tasks.forEach((task) => <TodoItem task={task} />)
-      }
+      {state.loaded ? (
+        state.tasks.length === 0 ? (
+          <Typography>You do not have any tasks in this list yet</Typography>
+        ) : (
+          state.tasks.forEach(task => <TodoItem task={task} />)
+        )
+      ) : (
+        <Paper className={classes.paper}>
+          <Skeleton />
+          <Skeleton width={80} />
+        </Paper>
+
+      )}
     </div>
   )
 }

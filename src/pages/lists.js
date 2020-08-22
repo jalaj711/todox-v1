@@ -182,7 +182,7 @@ class List extends React.Component {
 /**
  * Get the list styled and export it.
  */
-export default withStyles(_theme => ({
+export default withStyles(theme => ({
   root: {
     display: "block",
   },
@@ -202,6 +202,9 @@ export default withStyles(_theme => ({
   },
   error: {
     width: "-webkit-fill-available",
+    [theme.breakpoints.up('sm')]: {
+	width: '60%',
+    },
     background: "transparent",
     opacity: 0.7,
     textAlign: "center",

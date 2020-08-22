@@ -67,13 +67,16 @@ const useStyles = makeStyles(theme => ({
 
 export default function DesktopMenu() {
   const classes = useStyles()
+  const [title, setTitle] = React.useState("todox")
+
+  window.setTitle = setTitle;
 
   return (
     <div>
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" noWrap>
-            todox
+            {title}
           </Typography>
 
           <div className={classes.grow} />

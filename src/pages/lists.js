@@ -5,8 +5,6 @@ import { ErrorOutlineOutlined, AddOutlined } from "@material-ui/icons"
 import { Link } from "react-router-dom"
 import { Skeleton } from "@material-ui/lab"
 
-import database from "../database"
-
 /**
  * Lazy load the TodoItem component becaus the list may be empty
  * or it may even not exist
@@ -65,8 +63,58 @@ class List extends React.Component {
       error: false,
       loaded: false,
       tasks: [],
+      listname: props.match.params.id
     }
-    this.listname = props.match.params.id
+  }
+
+  updateListData(props){
+    let listname = props.match.params.id
+    window.setTitle(listname.capitalize())
+
+    //Check whether this list exists or not
+    window.database.getByIndex(
+      "lists",
+      "name",
+      listname
+    ).onsuccess = evt => {
+      if (evt.target.result) {
+        //Get the tasks
+        let tasks = window.database.getMultipleByKey(
+          "tasks",
+          "parent",
+          listname
+        )
+
+        //Change the state
+        this.setState({
+          //Create an error if there are no tasks in the list
+          error:
+            tasks.length === 0 ? "You have no tasks in this list yet" : null,
+          loaded: true,
+          tasks: tasks,
+          listname: listname
+        })
+      } else {
+        // The requested list could not be found. Show an error
+        this.setState({
+          tasks: [],
+          loaded: true,
+          error: "This list was not found, please create it first",
+          listname: listname
+        })
+      }
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if(this.state !== nextState){
+      return true
+    }else{
+      if(nextProps.match.params.id !== this.state.listname){
+        this.updateListData(nextProps)
+      }
+      return false
+    }
   }
 
   /**
@@ -77,34 +125,15 @@ class List extends React.Component {
    * It accesses the database and searches for the tasks in this list
    */
   componentDidMount() {
-    let db = new database()
-
-    //When the database has been loaded
-    db.onsuccess = () => {
-      //Check whether this list exists or not
-      db.get("lists", this.listname).onsuccess = evt => {
-        if (evt.target.result) {
-          //Get the tasks
-          let tasks = db.getMultipleByKey("tasks", "parent", this.listname)
-
-          //Change the state
-          this.setState({
-            //Create an error if there are no tasks in the list
-            error:
-              tasks.length === 0 ? "You have no tasks in this list yet" : null,
-            loaded: true,
-            tasks: tasks,
-          })
-        } else {
-          // The requested list could not be found. Show an error
-          this.setState({
-            tasks: [],
-            loaded: true,
-            error: "This list was not found, please create it first",
-          })
+    if (!window.database) {
+      import("../database").then(database => {
+        console.log("[indexedDB] Creating database instance")
+        new database.default().onsuccess = evt => {
+          window.database = evt.target.result
         }
-      }
+      })
     }
+    this.updateListData(this.props)
   }
 
   render() {
@@ -138,7 +167,7 @@ class List extends React.Component {
           "This list was not found, please create it first" ? (
             ""
           ) : (
-            <Link to={`/new/${this.listname}`} className={this.classes.fab}>
+            <Link to={`/new/${this.state.listname}`} className={this.classes.fab}>
               <Fab color="primary" aria-label="Add a todo to this list">
                 <AddOutlined />
               </Fab>
@@ -181,5 +210,5 @@ export default withStyles(_theme => ({
     position: "fixed",
     bottom: 25,
     right: 25,
-  },
+  }
 }))(List)

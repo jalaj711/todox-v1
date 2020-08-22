@@ -14,6 +14,26 @@ class db {
 
     //Handle some events
     this.request.onsuccess = evt => {
+      if (this.isNew) {
+        try {
+          /**
+           * We import a script here so that we don't make useless requests even
+           * if this upgrade event is not fired.
+           *
+           * Here we create default initial data we would need for our files
+           */
+          console.log("Doing the trick")
+          import("./todo_template").then(todo_template => {
+            ;["today", "bills", "shopping", "work"].forEach(name => {
+              let instance = new todo_template.default.TodoList(name, () => {
+                this.add("lists", instance)
+              })
+            })
+          })
+        } catch (e) {
+          console.error(e)
+        }
+      }
       this.db = evt.target.result
       try {
         this.onsuccess(evt)
@@ -33,6 +53,7 @@ class db {
     this.request.onupgradeneeded = evt => {
       this.db = evt.target.result
       this.objectStores = {}
+      this.isNew = true
 
       //Create object stores
       this.objectStores.lists = this.db.createObjectStore("lists", {
@@ -51,8 +72,6 @@ class db {
         unique: false,
       })
     }
-
-    this.objectStores = {}
   }
 
   /**
@@ -227,11 +246,11 @@ class db {
    *
    * @returns {Array}
    */
-  getMultipleByFilters(objStore, key, value, limit) {
+  getMultipleByFilters(objStore, key, value, oncomplete, limit) {
     let store = this.db.transaction([objStore]).objectStore(objStore)
     let matched = []
 
-    store.openCursor().onsucces = evt => {
+    store.openCursor().onsuccess = evt => {
       var cursor = evt.target.result
       if (cursor) {
         if (typeof value !== "object" && cursor.value[key] === value) {
@@ -271,9 +290,10 @@ class db {
         if (!limit || matched.length <= limit) {
           cursor.continue()
         }
+      }else{
+        oncomplete(matched)
       }
     }
-    return matched
   }
 }
 

@@ -17,6 +17,24 @@ window.addEventListener("load", () => {
   }
 })
 
+/**
+ * This creates a database if one does not exist and then adds it to 
+ * the window for global access.
+ */
+if (!window.database) {
+  import("./database").then(database => {
+    console.log("[indexedDB] Creating database instance")
+    let db = new database.default();
+    db.onsuccess = evt => {
+      window.database = db
+    }
+  })
+}
+
+//eslint-disable-next-line
+String.prototype.capitalize = function(){
+  return this.charAt(0).toUpperCase() + this.slice(1);
+}
 
 ReactDOM.render(
   <React.StrictMode>

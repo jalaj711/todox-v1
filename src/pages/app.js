@@ -11,6 +11,7 @@ let DesktopDrawer = React.lazy(() => import("../components/DesktopDrawer"))
 //Lazy load pages
 let Index = React.lazy(() => import("./index"))
 let Lists = React.lazy(() => import("./lists"))
+let Create = React.lazy(() => import("./create"))
 
 const drawerWidth = 240
 
@@ -60,6 +61,7 @@ export default function Home() {
           <Switch>
             <Route path="/" exact component={Index} />
             <Route path="/lists/:id" component={Lists} />
+            <Route path="/new/:id" component={Create} />
           </Switch>
         </main>
       </Suspense>

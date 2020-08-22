@@ -62,6 +62,9 @@ const useStyles = makeStyles(theme => ({
 export default function MobileMenu() {
   const classes = useStyles()
   const [mobileOpen, setMobileOpen] = React.useState(false)
+  const [title, setTitle] = React.useState("todox")
+
+  window.setTitle = setTitle
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -81,7 +84,7 @@ export default function MobileMenu() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            todox
+            {title}
           </Typography>
           <div className={classes.grow} />
           <IconButton

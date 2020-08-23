@@ -103,7 +103,7 @@ export default function DesktopMenu() {
             <div className={classes.toolbar} />
             <Divider />
             <List>
-              <NavLink to="/lists/today" activeClassName={classes.active}>
+              <NavLink to="/todox/lists/today" activeClassName={classes.active}>
                 <ListItem button>
                   <ListItemIcon>
                     <DayIcon />
@@ -111,7 +111,7 @@ export default function DesktopMenu() {
                   <ListItemText primary={"My Day"} />
                 </ListItem>
               </NavLink>
-              <NavLink to="/lists/starred" activeClassName={classes.active}>
+              <NavLink to="/todox/lists/starred" activeClassName={classes.active}>
                 <ListItem button>
                   <ListItemIcon>
                     <StarIcon />
@@ -119,7 +119,7 @@ export default function DesktopMenu() {
                   <ListItemText primary={"Starred Tasks"} />
                 </ListItem>
               </NavLink>
-              <NavLink to="/lists/bills" activeClassName={classes.active}>
+              <NavLink to="/todox/lists/bills" activeClassName={classes.active}>
                 <ListItem button>
                   <ListItemIcon>
                     <BillsIcon />
@@ -128,7 +128,7 @@ export default function DesktopMenu() {
                 </ListItem>
               </NavLink>
               <NavLink
-                to="/lists/shopping"
+                to="/todox/lists/shopping"
                 activeClassName={classes.active}
               >
                 <ListItem button>
@@ -138,7 +138,7 @@ export default function DesktopMenu() {
                   <ListItemText primary={"Shopping List"} />
                 </ListItem>
               </NavLink>
-              <NavLink to="/lists/work" activeClassName={classes.active}>
+              <NavLink to="/todox/lists/work" activeClassName={classes.active}>
                 <ListItem button>
                   <ListItemIcon>
                     <WorkIcon />

@@ -115,7 +115,7 @@ export default function MobileMenu() {
             <div className={classes.toolbar} />
             <Divider />
             <List>
-              <NavLink onClick={handleDrawerToggle} to="/lists/today" activeClassName={classes.active}>
+              <NavLink onClick={handleDrawerToggle} to="/todox/lists/today" activeClassName={classes.active}>
                 <ListItem button>
                   <ListItemIcon>
                     <DayIcon />
@@ -123,7 +123,7 @@ export default function MobileMenu() {
                   <ListItemText primary={"My Day"} />
                 </ListItem>
               </NavLink>
-              <NavLink onClick={handleDrawerToggle} to="/lists/starred" activeClassName={classes.active}>
+              <NavLink onClick={handleDrawerToggle} to="/todox/lists/starred" activeClassName={classes.active}>
                 <ListItem button>
                   <ListItemIcon>
                     <StarIcon />
@@ -131,7 +131,7 @@ export default function MobileMenu() {
                   <ListItemText primary={"Starred Tasks"} />
                 </ListItem>
               </NavLink>
-              <NavLink onClick={handleDrawerToggle} to="/lists/bills" activeClassName={classes.active}>
+              <NavLink onClick={handleDrawerToggle} to="/todox/lists/bills" activeClassName={classes.active}>
                 <ListItem button>
                   <ListItemIcon>
                     <BillsIcon />
@@ -139,7 +139,7 @@ export default function MobileMenu() {
                   <ListItemText primary={"Bills"} />
                 </ListItem>
               </NavLink>
-              <NavLink onClick={handleDrawerToggle} to="/lists/shopping" activeClassName={classes.active}>
+              <NavLink onClick={handleDrawerToggle} to="/todox/lists/shopping" activeClassName={classes.active}>
                 <ListItem button>
                   <ListItemIcon>
                     <ShoppingIcon />
@@ -147,7 +147,7 @@ export default function MobileMenu() {
                   <ListItemText primary={"Shopping List"} />
                 </ListItem>
               </NavLink>
-              <NavLink onClick={handleDrawerToggle} to="/lists/work" activeClassName={classes.active}>
+              <NavLink onClick={handleDrawerToggle} to="/todox/lists/work" activeClassName={classes.active}>
                 <ListItem button>
                   <ListItemIcon>
                     <WorkIcon />

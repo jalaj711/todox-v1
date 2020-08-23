@@ -59,9 +59,9 @@ export default function Home() {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
-            <Route path="/" exact component={Index} />
-            <Route path="/lists/:id" component={Lists} />
-            <Route path="/new/:id" component={Create} />
+            <Route path="/todox" exact component={Index} />
+            <Route path="/todox/lists/:id" component={Lists} />
+            <Route path="/todox/new/:id" component={Create} />
           </Switch>
         </main>
       </Suspense>

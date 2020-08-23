@@ -22,7 +22,6 @@ class db {
            *
            * Here we create default initial data we would need for our files
            */
-          console.log("Doing the trick")
           import("./todo_template").then(todo_template => {
             ;["today", "bills", "shopping", "work"].forEach(name => {
               let instance = new todo_template.default.TodoList(name, () => {

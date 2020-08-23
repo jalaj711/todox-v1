@@ -69,7 +69,8 @@ class List extends React.Component {
 
   updateListData(props){
     let listname = props.match.params.id
-    window.setTitle(listname.capitalize())
+    if (window.setTitle) window.setTitle(listname.capitalize())
+    document.title = listname.capitalize()
 
     //Check whether this list exists or not
     window.database.getByIndex(
@@ -167,7 +168,7 @@ class List extends React.Component {
           "This list was not found, please create it first" ? (
             ""
           ) : (
-            <Link to={`/new/${this.state.listname}`} className={this.classes.fab}>
+            <Link to={`/todox/new/${this.state.listname}`} className={this.classes.fab}>
               <Fab color="primary" aria-label="Add a todo to this list">
                 <AddOutlined />
               </Fab>

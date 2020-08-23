@@ -1,9 +1,11 @@
 import React from "react"
 import { withStyles } from "@material-ui/core/styles"
 import {
+  Collapse,
+  Typography,
+  Switch,
   Fab,
   TextField,
-  Container,
   FormControl,
   Select,
   InputLabel,
@@ -14,24 +16,30 @@ import { AddOutlined, CloseOutlined } from "@material-ui/icons"
 
 class CreateNew extends React.Component {
   /**
-   * This component is the actual 'list' where all the individual
-   * components are rendered.
+   * This component is the page where all the individual
+   * todos are created
    *
    * @param {*} props
    */
 
   state = {
     lists: [],
+    listname: "",
+    importance: 0,
+    setReminder: false,
   }
   constructor(props) {
     super(props)
     this.classes = this.props.classes
-    this.listname = props.match.params.id
+    this.state.listname = props.match.params.id
+    this.updateImportance = this.updateImportance.bind(this)
+    this.updateListname = this.updateListname.bind(this)
+    this.updateReminder = this.updateReminder.bind(this)
   }
 
   componentDidMount() {
-    console.log("Updaing state")
-    window.setTitle("Create New Task")
+    if (window.setTitle) window.setTitle("Create New Task")
+    document.title = "Create new task"
     if (!window.database) {
       import("../database").then(database => {
         console.log("[indexedDB] Creating database instance")
@@ -55,9 +63,30 @@ class CreateNew extends React.Component {
     )
   }
 
+  updateListname(evt) {
+    this.setState({
+      ...this.state,
+      listname: evt.target.value,
+    })
+  }
+
+  updateImportance(evt) {
+    this.setState({
+      ...this.state,
+      importance: evt.target.value,
+    })
+  }
+
+  updateReminder(evt) {
+    this.setState({
+      ...this.state,
+      setReminder: evt.target.checked,
+    })
+  }
+
   render() {
     return (
-      <Container>
+      <div>
         <form autoComplete="false">
           <TextField
             className={this.classes.input}
@@ -71,18 +100,49 @@ class CreateNew extends React.Component {
             multiline
           />
           <FormControl variant="outlined" className={this.classes.formControl}>
-            <InputLabel id="ist-choosing-label">Choose where to add</InputLabel>
+            <InputLabel id="list-choosing-label">
+              Choose where to add
+            </InputLabel>
             <Select
               labelId="list-choosing-label"
               id="list-chooser"
-              value={this.listname}
+              value={this.state.listname}
+              onChange={this.updateListname}
               label="Choose where to add"
             >
               {this.state.lists.map(list => (
-                <MenuItem value={list} key={list}>{list.capitalize()}</MenuItem>
+                <MenuItem value={list} key={list}>
+                  {list.capitalize()}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
+          <FormControl variant="outlined" className={this.classes.formControl}>
+            <InputLabel id="importance-choosing-label">Important?</InputLabel>
+            <Select
+              labelId="importance-choosing-label"
+              id="importance-chooser"
+              value={this.state.importance}
+              onChange={this.updateImportance}
+              label="Choose where to add"
+            >
+              <MenuItem value={1}>Yes</MenuItem>
+              <MenuItem value={0}>No</MenuItem>
+            </Select>
+          </FormControl>
+          <div className={this.classes.reminders}>
+            <div className={this.classes.reminderControl}>
+              <Typography component="span">Reminders</Typography>
+              <div className={this.classes.grow} />
+              <Switch
+                checked={this.state.setReminder}
+                onChange={this.updateReminder}
+              />
+            </div>
+            <Collapse in={this.state.setReminder}>
+              <Typography>Test content</Typography>
+            </Collapse>
+          </div>
         </form>
         <Fab
           className={this.classes.fabRight}
@@ -100,7 +160,7 @@ class CreateNew extends React.Component {
           <CloseOutlined className={this.classes.fabIcon} />
           Cancel
         </Fab>
-      </Container>
+      </div>
     )
   }
 }
@@ -114,7 +174,7 @@ export default withStyles(theme => ({
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 150,
+    width: "45%",
   },
   grow: {
     flexGrow: 1,
@@ -142,5 +202,24 @@ export default withStyles(theme => ({
   },
   input: {
     margin: 8,
+    width: "45%",
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+    },
   },
+  reminders: {
+    margin: theme.spacing(1),
+    borderRadius: 4,
+    border: "1px solid rgba(150, 150, 150, 0.4)",
+    "& .MuiTypography-root": {
+      padding: 8,
+    },
+    "& .MuiSwitch-root": {
+      float: "right",
+    },
+  },
+  reminderControl: {
+    width: "100%",
+    display: "flex"
+  }
 }))(CreateNew)

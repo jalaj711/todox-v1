@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   appBar: {
-    background: "transparent",
+    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -92,7 +92,7 @@ export default function MobileMenu() {
             color="inherit"
             aria-label="Show Notifications"
           >
-            <Badge badgeContent={6} color="secondary" max={9}>
+            <Badge badgeContent={6} color="primary" max={9}>
               <BellIcon />
             </Badge>
           </IconButton>

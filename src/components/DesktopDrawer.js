@@ -33,16 +33,16 @@ const drawerWidth = 240
 
 const useStyles = makeStyles(theme => ({
   drawer: {
-	'& a': {
-		color: theme.palette.text.primary,
-	},
+    "& a": {
+      color: theme.palette.text.primary,
+    },
     [theme.breakpoints.up("sm")]: {
       width: drawerWidth,
       flexShrink: 0,
     },
   },
   appBar: {
-    background: "transparent",
+    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
@@ -69,7 +69,7 @@ export default function DesktopMenu() {
   const classes = useStyles()
   const [title, setTitle] = React.useState("todox")
 
-  window.setTitle = setTitle;
+  window.setTitle = setTitle
 
   return (
     <div>
@@ -85,7 +85,7 @@ export default function DesktopMenu() {
             color="inherit"
             aria-label="Show Notifications"
           >
-            <Badge badgeContent={6} color="secondary" max={9}>
+            <Badge badgeContent={6} color="primary" max={9}>
               <BellIcon />
             </Badge>
           </IconButton>
@@ -111,7 +111,10 @@ export default function DesktopMenu() {
                   <ListItemText primary={"My Day"} />
                 </ListItem>
               </NavLink>
-              <NavLink to="/todox/lists/starred" activeClassName={classes.active}>
+              <NavLink
+                to="/todox/lists/starred"
+                activeClassName={classes.active}
+              >
                 <ListItem button>
                   <ListItemIcon>
                     <StarIcon />

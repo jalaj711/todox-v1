@@ -12,6 +12,10 @@ import {
   MenuItem,
 } from "@material-ui/core"
 import { AddOutlined, CloseOutlined } from "@material-ui/icons"
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers"
+import DateFnsUtils from "@date-io/date-fns"
+import add from "date-fns/add"
+import isPast from "date-fns/isPast"
 //import { Link } from "react-router-dom"
 
 class CreateNew extends React.Component {
@@ -27,14 +31,19 @@ class CreateNew extends React.Component {
     listname: "",
     importance: 0,
     setReminder: false,
+    reminder: new Date(),
+    notifTimeDelta: 0.5,
   }
   constructor(props) {
     super(props)
-    this.classes = this.props.classes
+    this.classes = props.classes
     this.state.listname = props.match.params.id
     this.updateImportance = this.updateImportance.bind(this)
     this.updateListname = this.updateListname.bind(this)
     this.updateReminder = this.updateReminder.bind(this)
+    this.updateReminderTime = this.updateReminderTime.bind(this)
+    this.updateNotifDelta = this.updateNotifDelta.bind(this)
+    this.validateDate = this.validateDate.bind(this)
   }
 
   componentDidMount() {
@@ -83,6 +92,61 @@ class CreateNew extends React.Component {
       setReminder: evt.target.checked,
     })
   }
+  updateReminderTime(newDate) {
+    this.setState({
+      ...this.state,
+      reminder: newDate,
+    })
+  }
+
+  updateNotifDelta(evt) {
+    this.setState({
+      ...this.state,
+      notifTimeDelta: evt.target.value,
+    })
+  }
+
+  validateDate() {
+    if (!document.getElementById("task-title").value) {
+      this.setState({
+        ...this.state,
+        nameError: "Please enter a title for the task",
+      })
+    } else {
+      if (this.state.setReminder) {
+        let date = new Date(this.state.reminder)
+        let st = isPast(date)
+        if (st) {
+          this.setState({
+            ...this.state,
+            dateError:
+              "You can not choose a past date!",
+          })
+        } else {
+          let delta = this.state.notifTimeDelta
+          let days, hours, minutes
+          minutes = delta * 10
+          hours = (minutes - (minutes % 60)) / 60
+          minutes = minutes - hours * 60
+          days = (hours - (hours % 24)) / 24
+          hours = hours - days * 24
+          if (days > 25) {
+            this.setState({
+              ...this.state,
+              dateError:
+                "Cannot set reminder for a task that is due more than 25 days from now",
+            })
+          } else {
+            delta = add(date, {
+              days: days,
+              hours: hours,
+              minutes: minutes,
+            })
+          }
+        }
+      }
+    }
+  }
 
   render() {
     return (
@@ -92,10 +156,14 @@ class CreateNew extends React.Component {
             className={this.classes.input}
             variant="outlined"
             label="Enter task name"
+            id="task-title"
+            error={this.state.nameError ? true : false}
+            helperText={this.state.nameError || ""}
           />
           <TextField
             className={this.classes.input}
             variant="outlined"
+            id="task-description"
             label="Enter task details (Optional)"
             multiline
           />
@@ -124,7 +192,7 @@ class CreateNew extends React.Component {
               id="importance-chooser"
               value={this.state.importance}
               onChange={this.updateImportance}
-              label="Choose where to add"
+              label="Important?"
             >
               <MenuItem value={1}>Yes</MenuItem>
               <MenuItem value={0}>No</MenuItem>
@@ -137,10 +205,51 @@ class CreateNew extends React.Component {
               <Switch
                 checked={this.state.setReminder}
                 onChange={this.updateReminder}
+                color="primary"
               />
             </div>
-            <Collapse in={this.state.setReminder}>
-              <Typography>Test content</Typography>
+            <Collapse
+              in={this.state.setReminder}
+              className={`${this.classes.collapse} ${
+                this.state.setReminder
+                  ? this.classes.reminderOn
+                  : this.classes.reminderOff
+              }`}
+            >
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <DateTimePicker
+                  label="Pick a date & time"
+                  variant="dialog"
+                  inputVariant="outlined"
+                  value={this.state.reminder}
+                  onChange={this.updateReminderTime}
+                  error={this.state.dateError ? true : false}
+                  helperText={this.state.dateError || ""}
+                />
+              </MuiPickersUtilsProvider>
+              <FormControl variant="outlined">
+                <InputLabel id="notif-delta-choosing-label">
+                  When should we remind you?
+                </InputLabel>
+                <Select
+                  labelId="notif-delta-choosing-label"
+                  id="notif-delta-chooser"
+                  value={this.state.notifTimeDelta}
+                  onChange={this.updateNotifDelta}
+                  label="When should we remind you?"
+                >
+                  <MenuItem value={0.1}>1 min before</MenuItem>
+                  <MenuItem value={0.2}>2 min before</MenuItem>
+                  <MenuItem value={0.5}>5 min before</MenuItem>
+                  <MenuItem value={1.0}>10 min before</MenuItem>
+                  <MenuItem value={1.5}>15 min before</MenuItem>
+                  <MenuItem value={3}>30 min before</MenuItem>
+                  <MenuItem value={6}>1 hr before</MenuItem>
+                  <MenuItem value={12}>2 hr before</MenuItem>
+                  <MenuItem value={36}>6 hr before</MenuItem>
+                  <MenuItem value={144}>1 day before</MenuItem>
+                </Select>
+              </FormControl>
             </Collapse>
           </div>
         </form>
@@ -148,16 +257,16 @@ class CreateNew extends React.Component {
           className={this.classes.fabRight}
           variant="extended"
           color="primary"
+          onClick={this.validateDate}
         >
           <AddOutlined className={this.classes.fabIcon} />
           Add
         </Fab>
-        <Fab
-          className={this.classes.fabLeft}
-          variant="extended"
-          color="secondary"
-        >
-          <CloseOutlined className={this.classes.fabIcon} />
+        <Fab className={this.classes.fabLeft} variant="extended">
+          <CloseOutlined
+            className={this.classes.fabIcon}
+            onClick={this.props.history.goBack}
+          />
           Cancel
         </Fab>
       </div>
@@ -174,6 +283,7 @@ export default withStyles(theme => ({
   },
   formControl: {
     margin: theme.spacing(1),
+    marginLeft: 0,
     width: "45%",
   },
   grow: {
@@ -201,14 +311,17 @@ export default withStyles(theme => ({
     marginRight: theme.spacing(1),
   },
   input: {
-    margin: 8,
+    margin: theme.spacing(1),
+    marginLeft: 0,
     width: "45%",
     [theme.breakpoints.down("xs")]: {
       width: "100%",
     },
   },
   reminders: {
+    width: "100%",
     margin: theme.spacing(1),
+    marginLeft: 0,
     borderRadius: 4,
     border: "1px solid rgba(150, 150, 150, 0.4)",
     "& .MuiTypography-root": {
@@ -217,9 +330,26 @@ export default withStyles(theme => ({
     "& .MuiSwitch-root": {
       float: "right",
     },
+    ":hover": {
+      border: "1px solid white",
+    },
   },
   reminderControl: {
+    padding: theme.spacing(1.5),
     width: "100%",
-    display: "flex"
-  }
+    display: "flex",
+  },
+  reminderOn: {
+    padding: theme.spacing(2),
+  },
+  reminderOff: {
+    padding: 0,
+  },
+  collapse: {
+    "& .MuiFormControl-root": {
+      margin: theme.spacing(1),
+      marginLeft: 0,
+      width: "-webkit-fill-available",
+    },
+  },
 }))(CreateNew)

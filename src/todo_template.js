@@ -16,7 +16,6 @@ class Todo {
     starred = false,
     done = false,
     status = 0,
-    priority = 1,
   }) {
     //These props are required
     if (title === null || parent === null) {
@@ -38,7 +37,6 @@ class Todo {
           this.starred = starred
           this.done = done
           this.status = status
-          this.priority = priority
 
           this.id = this.genId()
 

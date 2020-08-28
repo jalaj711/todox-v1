@@ -224,6 +224,7 @@ class db {
    * @param {String} objStore
    * @param {String} key
    * @param {String} value
+   * @param {Function} oncomplete
    * @param {Number} limit
    *
    * Finds all the entries in the given objectStore but this
@@ -239,11 +240,11 @@ class db {
    * - __re: A Regular Expression to match the entries.
    * - __ne: Not equal to given value.
    *
-   * Example: getMultipleByFilters("employees", "salary", {"__gt": 4000})
+   * Example: getMultipleByFilters("employees", "salary", {filter: "__gt", val: 4000})
    *  will return all entries in the objectStore "employees" which have
    * the property "salary" set to above 4000.
    *
-   * @returns {Array}
+   * @returns {undefined}
    */
   getMultipleByFilters(objStore, key, value, oncomplete, limit) {
     let store = this.db.transaction([objStore]).objectStore(objStore)

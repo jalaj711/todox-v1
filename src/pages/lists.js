@@ -65,10 +65,11 @@ class List extends React.Component {
       tasks: [],
       listname: props.match.params.id,
     }
+    this.updateListData = this.updateListData.bind(this)
   }
 
-  updateListData(props) {
-    let listname = props.match.params.id
+  updateListData() {
+    let listname = this.props.match.params.id
     if (window.setTitle) window.setTitle(listname.capitalize())
     document.title = listname.capitalize()
 
@@ -127,11 +128,11 @@ class List extends React.Component {
         console.log("[indexedDB] Creating database instance")
         new database.default().onsuccess = evt => {
           window.database = evt.target.result
-          this.updateListData(this.props)
+          this.updateListData()
         }
       })
     } else {
-      this.updateListData(this.props)
+      this.updateListData()
     }
   }
 

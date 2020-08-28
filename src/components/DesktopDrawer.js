@@ -12,9 +12,8 @@ import {
   Toolbar,
   IconButton,
   Badge,
-  Button
 } from "@material-ui/core"
-
+import { Skeleton } from "@material-ui/lab"
 import {
   NotificationsNoneOutlined as BellIcon,
   StarBorderOutlined as StarIcon,
@@ -26,7 +25,7 @@ import {
   ShoppingCartOutlined as ShoppingIcon,
   WorkOutline as WorkIcon,
   InfoOutlined as InfoIcon,
-  AddOutlined as PlusIcon
+  AddOutlined as PlusIcon,
 } from "@material-ui/icons"
 
 import { NavLink } from "react-router-dom"
@@ -36,11 +35,18 @@ const drawerWidth = 240
 class Item extends React.Component {
   render() {
     return (
-      <NavLink to={this.props.link} activeClassName={this.props.classes.root}>
+      <NavLink
+        to={this.props.link}
+        activeClassName={this.props.classes.active}
+      >
         <ListItem button>
-          <ListItemIcon>
-            <this.props.Icon />
-          </ListItemIcon>
+          {this.props.Icon ? (
+            <ListItemIcon>
+              <this.props.Icon />
+            </ListItemIcon>
+          ) : (
+            ""
+          )}
           <ListItemText primary={this.props.text} />
         </ListItem>
       </NavLink>
@@ -62,9 +68,42 @@ class DesktopMenu extends React.Component {
     super(props)
     this.state = {
       title: "todox",
+      lists: [],
     }
     window.setTitle = title => {
       this.setState({ title })
+    }
+  }
+
+  componentDidMount() {
+    let getLists = () => {
+      window.database.getMultipleByFilters(
+        "lists",
+        "id",
+        {
+          filter: "__re",
+          val: /^(?!.*bills|today|work|shopping).*$/,
+        },
+        lists => {
+          this.setState({
+            ...this.state,
+            listsLoaded: true,
+            lists: lists || [],
+          })
+        }
+      )
+    }
+    if (!window.database) {
+      import("../database").then(database => {
+        console.log("[indexedDB] Creating database instance")
+        let db = new database.default()
+        db.onsuccess = _evt => {
+          window.database = db
+          getLists()
+        }
+      })
+    } else {
+      getLists()
     }
   }
 
@@ -147,12 +186,38 @@ class DesktopMenu extends React.Component {
               </List>
               <Divider />
               <List>
-              <Button className={this.props.classes.button}>
-                Your Lists
-                <IconButton>
-                  <PlusIcon />
-                </IconButton>
-              </Button>
+                <div className={this.props.classes.button}>
+                  <Typography variant="button">Your Lists</Typography>
+                  <div className={this.props.classes.grow} />
+                  <IconButton>
+                    <PlusIcon />
+                  </IconButton>
+                </div>
+                {this.state.listsLoaded ? (
+                  this.state.lists.length !== 0 ? (
+                    this.state.lists.map(list => (
+                      <DrawerItem
+                        text={list.title}
+                        link={`/todox/lists/${list.title}`}
+                        key={list.id}
+                      />
+                    ))
+                  ) : (
+                    <Typography
+                      variant="body1"
+                      component="i"
+                      className={this.props.classes.notFound}
+                    >
+                      No lists found. Click on the + icon on top right to create
+                      one
+                    </Typography>
+                  )
+                ) : (
+                  <div style={{ padding: 8 }}>
+                    <Skeleton width={200} />
+                    <Skeleton width={160} />
+                  </div>
+                )}
               </List>
               <List>
                 <ListItem button>
@@ -196,6 +261,17 @@ export default withStyles(theme => ({
     flexGrow: 1,
   },
   button: {
-    width: "-webkit-fill-available"
-  }
+    display: "flex",
+    padding: 0,
+    fontSize: theme.typography.subtitle2.fontSize,
+    width: "-webkit-fill-available",
+    "& .MuiTypography-root, .MuiIconButton-root": {
+      padding: theme.spacing(1),
+    },
+  },
+  notFound: {
+    fontSize: "smaller",
+    padding: ` 0 ${theme.spacing(1)}px`,
+    display: "flex",
+  },
 }))(DesktopMenu)

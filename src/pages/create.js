@@ -14,8 +14,9 @@ import {
 import { AddOutlined, CloseOutlined } from "@material-ui/icons"
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers"
 import DateFnsUtils from "@date-io/date-fns"
-import add from "date-fns/add"
+import sub from "date-fns/sub"
 import isPast from "date-fns/isPast"
+import dateDelta from "date-fns/differenceInDays"
 //import { Link } from "react-router-dom"
 
 class CreateNew extends React.Component {
@@ -52,24 +53,39 @@ class CreateNew extends React.Component {
     if (!window.database) {
       import("../database").then(database => {
         console.log("[indexedDB] Creating database instance")
-        new database.default().onsuccess = evt => {
-          window.database = evt.target.result
+        let db = new database.default()
+        db.onsuccess = _evt => {
+          window.database = db
+          db.getMultipleByFilters(
+            "lists",
+            "name",
+            {
+              filter: "__ne",
+              val: "",
+            },
+            lists => {
+              this.setState({
+                lists: lists,
+              })
+            }
+          )
         }
       })
+    } else {
+      window.database.getMultipleByFilters(
+        "lists",
+        "name",
+        {
+          filter: "__ne",
+          val: "",
+        },
+        lists => {
+          this.setState({
+            lists: lists,
+          })
+        }
+      )
     }
-    window.database.getMultipleByFilters(
-      "lists",
-      "name",
-      {
-        filter: "__ne",
-        val: "",
-      },
-      lists => {
-        this.setState({
-          lists: lists,
-        })
-      }
-    )
   }
 
   updateListname(evt) {
@@ -107,42 +123,45 @@ class CreateNew extends React.Component {
   }
 
   validateDate() {
+    this.setState({
+      ...this.state,
+      nameError: false,
+      dateError: false,
+    })
     if (!document.getElementById("task-title").value) {
       this.setState({
         ...this.state,
         nameError: "Please enter a title for the task",
       })
-    } else {
-      if (this.state.setReminder) {
-        let date = new Date(this.state.reminder)
-        let st = isPast(date)
-        if (st) {
+    } else if (this.state.setReminder) {
+      let date = new Date(this.state.reminder)
+      let delta = this.state.notifTimeDelta
+      let days, hours, minutes
+      minutes = delta * 10
+      hours = (minutes - (minutes % 60)) / 60
+      minutes = minutes - hours * 60
+      days = (hours - (hours % 24)) / 24
+      hours = hours - days * 24
+      date = sub(date, {
+        days,
+        hours,
+        minutes,
+      })
+
+      if (isPast(date)) {
+        this.setState({
+          ...this.state,
+          dateError: "You can not choose a past date!",
+        })
+      } else {
+        if (dateDelta(date, new Date()) > 25) {
           this.setState({
             ...this.state,
             dateError:
-              "You can not choose a past date!",
+              "Cannot set reminder for a task that is due more than 25 days from now",
           })
         } else {
-          let delta = this.state.notifTimeDelta
-          let days, hours, minutes
-          minutes = delta * 10
-          hours = (minutes - (minutes % 60)) / 60
-          minutes = minutes - hours * 60
-          days = (hours - (hours % 24)) / 24
-          hours = hours - days * 24
-          if (days > 25) {
-            this.setState({
-              ...this.state,
-              dateError:
-                "Cannot set reminder for a task that is due more than 25 days from now",
-            })
-          } else {
-            delta = add(date, {
-              days: days,
-              hours: hours,
-              minutes: minutes,
-            })
-          }
+          alert("Setting todo")
         }
       }
     }
@@ -174,15 +193,30 @@ class CreateNew extends React.Component {
             <Select
               labelId="list-choosing-label"
               id="list-chooser"
-              value={this.state.listname}
+              value={
+                this.state.lists &&
+                this.state.lists.indexOf(this.state.listname) > -1
+                  ? this.state.listname
+                  : -1
+              }
+              disabled={
+                !(
+                  this.state.lists &&
+                  this.state.lists.indexOf(this.state.listname) > -1
+                )
+              }
               onChange={this.updateListname}
               label="Choose where to add"
             >
-              {this.state.lists.map(list => (
-                <MenuItem value={list} key={list}>
-                  {list.capitalize()}
-                </MenuItem>
-              ))}
+              {this.state.lists ? (
+                this.state.lists.map(list => (
+                  <MenuItem value={list} key={list}>
+                    {list.capitalize()}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value={-1}>Loading...</MenuItem>
+              )}
             </Select>
           </FormControl>
           <FormControl variant="outlined" className={this.classes.formControl}>
@@ -262,11 +296,12 @@ class CreateNew extends React.Component {
           <AddOutlined className={this.classes.fabIcon} />
           Add
         </Fab>
-        <Fab className={this.classes.fabLeft} variant="extended">
-          <CloseOutlined
-            className={this.classes.fabIcon}
-            onClick={this.props.history.goBack}
-          />
+        <Fab
+          className={this.classes.fabLeft}
+          variant="extended"
+          onClick={this.props.history.goBack}
+        >
+          <CloseOutlined className={this.classes.fabIcon} />
           Cancel
         </Fab>
       </div>
@@ -313,10 +348,7 @@ export default withStyles(theme => ({
   input: {
     margin: theme.spacing(1),
     marginLeft: 0,
-    width: "45%",
-    [theme.breakpoints.down("xs")]: {
-      width: "100%",
-    },
+    width: "100%",
   },
   reminders: {
     width: "100%",

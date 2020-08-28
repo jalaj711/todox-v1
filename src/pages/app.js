@@ -1,5 +1,5 @@
 import React, { Suspense } from "react"
-import { makeStyles } from "@material-ui/core/styles"
+import { withStyles } from "@material-ui/core/styles"
 import { Backdrop, CircularProgress } from "@material-ui/core"
 import { Switch, Route } from "react-router-dom"
 import theme from "../theme"
@@ -15,7 +15,53 @@ let Create = React.lazy(() => import("./create"))
 
 const drawerWidth = 240
 
-const useStyles = makeStyles(theme => ({
+class Home extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isMobile: window.innerWidth < theme.breakpoints.values.sm,
+    }
+  }
+
+  componentDidMount() {
+    let prevVal = 0
+
+    window.addEventListener("resize", () => {
+      let breakpoint = theme.breakpoints.values.sm
+      if ((breakpoint - prevVal) / (breakpoint - window.innerWidth) < 0) {
+        this.setState({ isMobile: window.innerWidth < breakpoint })
+      }
+      prevVal = window.innerWidth
+    })
+  }
+
+  render() {
+    return (
+      <div className={this.props.classes.root}>
+        <Suspense
+          fallback={
+            <Backdrop open={true}>
+              <CircularProgress />
+            </Backdrop>
+          }
+        >
+          {this.state.isMobile ? <MobileDrawer /> : <DesktopDrawer />}
+
+          <main className={this.props.classes.content}>
+            <div className={this.props.classes.toolbar} />
+            <Switch>
+              <Route path="/todox" exact component={Index} />
+              <Route path="/todox/lists/:id" component={Lists} />
+              <Route path="/todox/new/:id" component={Create} />
+            </Switch>
+          </main>
+        </Suspense>
+      </div>
+    )
+  }
+}
+
+export default withStyles(theme => ({
   root: {
     display: "flex",
   },
@@ -28,43 +74,4 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
-}))
-
-export default function Home() {
-  const classes = useStyles()
-  const [isMobile, setMobileDrawer] = React.useState(
-    window.innerWidth < theme.breakpoints.values.sm
-  )
-  let prevVal = 0
-
-  window.addEventListener("resize", function () {
-    let breakpoint = theme.breakpoints.values.sm
-    if ((breakpoint - prevVal) / (breakpoint - window.innerWidth) < 0) {
-      setMobileDrawer(window.innerWidth < breakpoint)
-    }
-    prevVal = window.innerWidth
-  })
-
-  return (
-    <div className={classes.root}>
-      <Suspense
-        fallback={
-          <Backdrop open={true}>
-            <CircularProgress />
-          </Backdrop>
-        }
-      >
-        {isMobile ? <MobileDrawer /> : <DesktopDrawer />}
-
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Switch>
-            <Route path="/todox" exact component={Index} />
-            <Route path="/todox/lists/:id" component={Lists} />
-            <Route path="/todox/new/:id" component={Create} />
-          </Switch>
-        </main>
-      </Suspense>
-    </div>
-  )
-}
+}))(Home)

@@ -16,6 +16,7 @@ class Todo {
     starred = false,
     done = false,
     status = 0,
+    id = null,
   }) {
     //These props are required
     if (title === null || parent === null) {
@@ -38,7 +39,7 @@ class Todo {
           this.done = done
           this.status = status
 
-          this.id = this.genId()
+          this.id = id || this.genId()
 
         } else {
           throw Error(
@@ -63,7 +64,7 @@ class Todo {
 }
 
 class TodoList {
-  constructor(name, oncreated) {
+  constructor(name, oncreated, id) {
     window.database.getByIndex("lists", "name", name).onsuccess = event => {
       if (event.target.result) {
         throw Error(
@@ -71,7 +72,7 @@ class TodoList {
         )
       } else {
         this.name = name
-        this.id = this.genId()
+        this.id = id || this.genId()
         this.members = []
         oncreated()
       }

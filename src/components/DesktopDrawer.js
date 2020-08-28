@@ -1,5 +1,5 @@
 import React from "react"
-import { makeStyles } from "@material-ui/core/styles"
+import { withStyles } from "@material-ui/core/styles"
 import {
   Typography,
   AppBar,
@@ -12,6 +12,7 @@ import {
   Toolbar,
   IconButton,
   Badge,
+  Button
 } from "@material-ui/core"
 
 import {
@@ -25,13 +26,151 @@ import {
   ShoppingCartOutlined as ShoppingIcon,
   WorkOutline as WorkIcon,
   InfoOutlined as InfoIcon,
+  AddOutlined as PlusIcon
 } from "@material-ui/icons"
 
 import { NavLink } from "react-router-dom"
 
 const drawerWidth = 240
 
-const useStyles = makeStyles(theme => ({
+class Item extends React.Component {
+  render() {
+    return (
+      <NavLink to={this.props.link} activeClassName={this.props.classes.root}>
+        <ListItem button>
+          <ListItemIcon>
+            <this.props.Icon />
+          </ListItemIcon>
+          <ListItemText primary={this.props.text} />
+        </ListItem>
+      </NavLink>
+    )
+  }
+}
+let DrawerItem = withStyles(theme => ({
+  active: {
+    "& .MuiListItem-root": {
+      background: `${theme.palette.primary.light}`,
+      borderTopRightRadius: 20,
+      borderBottomRightRadius: 20,
+    },
+  },
+}))(Item)
+
+class DesktopMenu extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      title: "todox",
+    }
+    window.setTitle = title => {
+      this.setState({ title })
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <AppBar position="fixed" className={this.props.classes.appBar}>
+          <Toolbar>
+            <Typography variant="h6" noWrap>
+              {this.state.title}
+            </Typography>
+
+            <div className={this.props.classes.grow} />
+            <IconButton
+              edge="end"
+              color="inherit"
+              aria-label="Show Notifications"
+            >
+              <Badge badgeContent={6} color="primary" max={9}>
+                <BellIcon />
+              </Badge>
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <nav className={this.props.classes.drawer}>
+          <Drawer
+            classes={{
+              paper: this.props.classes.drawerPaper,
+            }}
+            variant="permanent"
+            open
+          >
+            <div>
+              <div className={this.props.classes.toolbar} />
+              <Divider />
+              <List>
+                <DrawerItem
+                  link="/todox/lists/today"
+                  text="My Day"
+                  Icon={DayIcon}
+                />
+                <DrawerItem
+                  link="/todox/lists/starred"
+                  text="Starred Tasks"
+                  Icon={StarIcon}
+                />
+                <DrawerItem
+                  link="/todox/lists/bills"
+                  text="Bills"
+                  Icon={BillsIcon}
+                />
+                <DrawerItem
+                  link="/todox/lists/shopping"
+                  text="Shopping List"
+                  Icon={ShoppingIcon}
+                />
+                <DrawerItem
+                  link="/todox/lists/work"
+                  text="Work"
+                  Icon={WorkIcon}
+                />
+              </List>
+              <Divider />
+              <List>
+                <DrawerItem
+                  link="/todox/viewby/pending"
+                  text="Pending"
+                  Icon={PendingIcon}
+                />
+                <DrawerItem
+                  link="/todox/viewby/done"
+                  text="Done"
+                  Icon={CheckIcon}
+                />
+                <DrawerItem
+                  link="/todox/viewby/missing"
+                  text="Missing"
+                  Icon={CrossIcon}
+                />
+              </List>
+              <Divider />
+              <List>
+              <Button className={this.props.classes.button}>
+                Your Lists
+                <IconButton>
+                  <PlusIcon />
+                </IconButton>
+              </Button>
+              </List>
+              <List>
+                <ListItem button>
+                  <ListItemIcon>
+                    <InfoIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="About us" />
+                </ListItem>
+              </List>
+            </div>
+          </Drawer>
+        </nav>
+      </div>
+    )
+  }
+}
+
+export default withStyles(theme => ({
   drawer: {
     "& a": {
       color: theme.palette.text.primary,
@@ -56,133 +195,7 @@ const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
   },
-  active: {
-    "& .MuiListItem-root": {
-      background: `${theme.palette.primary.light}`,
-      borderTopRightRadius: 20,
-      borderBottomRightRadius: 20,
-    },
-  },
-}))
-
-export default function DesktopMenu() {
-  const classes = useStyles()
-  const [title, setTitle] = React.useState("todox")
-
-  window.setTitle = setTitle
-
-  return (
-    <div>
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="h6" noWrap>
-            {title}
-          </Typography>
-
-          <div className={classes.grow} />
-          <IconButton
-            edge="end"
-            color="inherit"
-            aria-label="Show Notifications"
-          >
-            <Badge badgeContent={6} color="primary" max={9}>
-              <BellIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <nav className={classes.drawer}>
-        <Drawer
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          variant="permanent"
-          open
-        >
-          <div>
-            <div className={classes.toolbar} />
-            <Divider />
-            <List>
-              <NavLink to="/todox/lists/today" activeClassName={classes.active}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <DayIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"My Day"} />
-                </ListItem>
-              </NavLink>
-              <NavLink
-                to="/todox/lists/starred"
-                activeClassName={classes.active}
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <StarIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Starred Tasks"} />
-                </ListItem>
-              </NavLink>
-              <NavLink to="/todox/lists/bills" activeClassName={classes.active}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <BillsIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Bills"} />
-                </ListItem>
-              </NavLink>
-              <NavLink
-                to="/todox/lists/shopping"
-                activeClassName={classes.active}
-              >
-                <ListItem button>
-                  <ListItemIcon>
-                    <ShoppingIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Shopping List"} />
-                </ListItem>
-              </NavLink>
-              <NavLink to="/todox/lists/work" activeClassName={classes.active}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <WorkIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Work"} />
-                </ListItem>
-              </NavLink>
-            </List>
-            <Divider />
-            <List>
-              <ListItem button>
-                <ListItemIcon>
-                  <PendingIcon />
-                </ListItemIcon>
-                <ListItemText primary={"Pending"} />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon>
-                  <CheckIcon />
-                </ListItemIcon>
-                <ListItemText primary={"Done"} />
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon>
-                  <CrossIcon />
-                </ListItemIcon>
-                <ListItemText primary={"Missing"} />
-              </ListItem>
-            </List>
-            <Divider />
-            <List>
-              <ListItem button>
-                <ListItemIcon>
-                  <InfoIcon />
-                </ListItemIcon>
-                <ListItemText primary="About us" />
-              </ListItem>
-            </List>
-          </div>
-        </Drawer>
-      </nav>
-    </div>
-  )
-}
+  button: {
+    width: "-webkit-fill-available"
+  }
+}))(DesktopMenu)

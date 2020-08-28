@@ -25,7 +25,7 @@ if (!window.database) {
   import("./database").then(database => {
     console.log("[indexedDB] Creating database instance")
     let db = new database.default();
-    db.onsuccess = evt => {
+    db.onsuccess = _evt => {
       window.database = db
     }
   })

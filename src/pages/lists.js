@@ -63,21 +63,17 @@ class List extends React.Component {
       error: false,
       loaded: false,
       tasks: [],
-      listname: props.match.params.id
+      listname: props.match.params.id,
     }
   }
 
-  updateListData(props){
+  updateListData(props) {
     let listname = props.match.params.id
     if (window.setTitle) window.setTitle(listname.capitalize())
     document.title = listname.capitalize()
 
     //Check whether this list exists or not
-    window.database.getByIndex(
-      "lists",
-      "name",
-      listname
-    ).onsuccess = evt => {
+    window.database.get("lists", listname).onsuccess = evt => {
       if (evt.target.result) {
         //Get the tasks
         let tasks = window.database.getMultipleByKey(
@@ -93,7 +89,7 @@ class List extends React.Component {
             tasks.length === 0 ? "You have no tasks in this list yet" : null,
           loaded: true,
           tasks: tasks,
-          listname: listname
+          listname: listname,
         })
       } else {
         // The requested list could not be found. Show an error
@@ -101,17 +97,17 @@ class List extends React.Component {
           tasks: [],
           loaded: true,
           error: "This list was not found, please create it first",
-          listname: listname
+          listname: listname,
         })
       }
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if(this.state !== nextState){
+    if (this.state !== nextState) {
       return true
-    }else{
-      if(nextProps.match.params.id !== this.state.listname){
+    } else {
+      if (nextProps.match.params.id !== this.state.listname) {
         this.updateListData(nextProps)
       }
       return false
@@ -131,10 +127,12 @@ class List extends React.Component {
         console.log("[indexedDB] Creating database instance")
         new database.default().onsuccess = evt => {
           window.database = evt.target.result
+          this.updateListData(this.props)
         }
       })
+    } else {
+      this.updateListData(this.props)
     }
-    this.updateListData(this.props)
   }
 
   render() {
@@ -168,7 +166,10 @@ class List extends React.Component {
           "This list was not found, please create it first" ? (
             ""
           ) : (
-            <Link to={`/todox/new/${this.state.listname}`} className={this.classes.fab}>
+            <Link
+              to={`/todox/new/${this.state.listname}`}
+              className={this.classes.fab}
+            >
               <Fab color="primary" aria-label="Add a todo to this list">
                 <AddOutlined />
               </Fab>
@@ -203,8 +204,8 @@ export default withStyles(theme => ({
   },
   error: {
     width: "-webkit-fill-available",
-    [theme.breakpoints.up('sm')]: {
-	width: '60%',
+    [theme.breakpoints.up("sm")]: {
+      width: "60%",
     },
     background: "transparent",
     opacity: 0.7,
@@ -214,5 +215,5 @@ export default withStyles(theme => ({
     position: "fixed",
     bottom: 25,
     right: 25,
-  }
+  },
 }))(List)

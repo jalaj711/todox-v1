@@ -26,7 +26,7 @@ class db {
             ;["today", "bills", "shopping", "work"].forEach(name => {
               let instance = new todo_template.default.TodoList(name, () => {
                 this.add("lists", instance)
-              })
+              }, name)
             })
           })
         } catch (e) {

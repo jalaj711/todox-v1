@@ -26,7 +26,7 @@ class db {
             ;["today", "bills", "shopping", "work"].forEach(name => {
               let instance = new todo_template.default.TodoList(name, () => {
                 this.add("lists", instance)
-              }, name)
+              }, {id: name, })
             })
           })
         } catch (e) {
@@ -283,7 +283,7 @@ class db {
                 break
             }
             if (matches) {
-              matched.push(ref)
+              matched.push(cursor.value)
             }
           }
         }

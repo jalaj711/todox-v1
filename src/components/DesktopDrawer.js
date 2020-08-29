@@ -12,6 +12,13 @@ import {
   Toolbar,
   IconButton,
   Badge,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  TextField,
+  Button,
 } from "@material-ui/core"
 import { Skeleton } from "@material-ui/lab"
 import {
@@ -35,10 +42,7 @@ const drawerWidth = 240
 class Item extends React.Component {
   render() {
     return (
-      <NavLink
-        to={this.props.link}
-        activeClassName={this.props.classes.active}
-      >
+      <NavLink to={this.props.link} activeClassName={this.props.classes.active}>
         <ListItem button>
           {this.props.Icon ? (
             <ListItemIcon>
@@ -69,42 +73,114 @@ class DesktopMenu extends React.Component {
     this.state = {
       title: "todox",
       lists: [],
+      dialogOpen: false,
     }
     window.setTitle = title => {
       this.setState({ title })
     }
+
+    this.handleDialogOpen = this.handleDialogOpen.bind(this)
+    this.handleDialogClose = this.handleDialogClose.bind(this)
+    this.getLists = this.getLists.bind(this)
+    this.addList = this.addList.bind(this)
+    this.createList = this.createList.bind(this)
   }
 
   componentDidMount() {
-    let getLists = () => {
-      window.database.getMultipleByFilters(
-        "lists",
-        "id",
-        {
-          filter: "__re",
-          val: /^(?!.*bills|today|work|shopping).*$/,
-        },
-        lists => {
-          this.setState({
-            ...this.state,
-            listsLoaded: true,
-            lists: lists || [],
-          })
-        }
-      )
-    }
     if (!window.database) {
       import("../database").then(database => {
         console.log("[indexedDB] Creating database instance")
         let db = new database.default()
         db.onsuccess = _evt => {
           window.database = db
-          getLists()
+          this.getLists()
         }
       })
     } else {
-      getLists()
+      this.getLists()
     }
+  }
+
+  getLists() {
+    window.database.getMultipleByFilters(
+      "lists",
+      "id",
+      {
+        filter: "__re",
+        val: /^(?!.*bills|today|work|shopping).*$/,
+      },
+      lists => {
+        this.setState({
+          ...this.state,
+          listsLoaded: true,
+          lists: lists || [],
+        })
+      }
+    )
+  }
+
+  handleDialogOpen() {
+    this.setState({
+      ...this.state,
+      dialogOpen: true,
+    })
+  }
+
+  addList(name) {
+    import("../todo_template").then(todo_template => {
+      let list = new todo_template.default.TodoList(
+        name,
+        () => {
+          window.database.add("lists", list).onsuccess = evt => {
+            console.log("done")
+            this.handleDialogClose()
+            this.getLists()
+          }
+        },
+        {
+          onerror: msg => {
+            console.log("error", msg)
+            this.setState({
+              ...this.state,
+              addError:
+                "This name is already being used. Please try sometthing else!",
+            })
+          },
+        }
+      )
+    })
+  }
+  createList() {
+    let name = document.getElementById("add-list-to-db").value
+    if (name) {
+      if (!window.database) {
+        import("../database").then(database => {
+          console.log("[indexedDB] Creating database instance")
+          let db = new database.default()
+          db.onsuccess = _evt => {
+            window.database = db
+            this.addList(name)
+          }
+        })
+      } else {
+        this.addList(name)
+      }
+    } else {
+      this.setState({
+        ...this.state,
+        addError: "Please enter a name",
+      })
+    }
+  }
+
+  handleDialogClose() {
+    this.setState({
+      ...this.setState({
+        ...this.state,
+        dialogOpen: false,
+        addError: undefined
+      }),
+    })
   }
 
   render() {
@@ -189,7 +265,7 @@ class DesktopMenu extends React.Component {
                 <div className={this.props.classes.button}>
                   <Typography variant="button">Your Lists</Typography>
                   <div className={this.props.classes.grow} />
-                  <IconButton>
+                  <IconButton onClick={this.handleDialogOpen}>
                     <PlusIcon />
                   </IconButton>
                 </div>
@@ -197,8 +273,8 @@ class DesktopMenu extends React.Component {
                   this.state.lists.length !== 0 ? (
                     this.state.lists.map(list => (
                       <DrawerItem
-                        text={list.title}
-                        link={`/todox/lists/${list.title}`}
+                        text={list.name}
+                        link={`/todox/lists/${list.id}`}
                         key={list.id}
                       />
                     ))
@@ -219,6 +295,7 @@ class DesktopMenu extends React.Component {
                   </div>
                 )}
               </List>
+              <Divider />
               <List>
                 <ListItem button>
                   <ListItemIcon>
@@ -230,6 +307,36 @@ class DesktopMenu extends React.Component {
             </div>
           </Drawer>
         </nav>
+        <Dialog
+          open={this.state.dialogOpen}
+          onClose={this.handleDialogClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Add new List</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              To create a new task-list enter your list title here
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="add-list-to-db"
+              label="List tittle"
+              type="email"
+              fullWidth
+              error={Boolean(this.state.addError)}
+              helperText={this.state.addError}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleDialogClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.createList} color="primary">
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     )
   }

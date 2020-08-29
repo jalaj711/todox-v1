@@ -70,12 +70,13 @@ class List extends React.Component {
 
   updateListData() {
     let listname = this.props.match.params.id
-    if (window.setTitle) window.setTitle(listname.capitalize())
-    document.title = listname.capitalize()
 
     //Check whether this list exists or not
     window.database.get("lists", listname).onsuccess = evt => {
       if (evt.target.result) {
+        if (window.setTitle)
+          window.setTitle(evt.target.result.name.capitalize())
+        document.title = evt.target.result.name.capitalize()
         //Get the tasks
         let tasks = window.database.getMultipleByKey(
           "tasks",
@@ -93,6 +94,8 @@ class List extends React.Component {
           listname: listname,
         })
       } else {
+        if (window.setTitle) window.setTitle("List not found")
+        document.title = "List not found"
         // The requested list could not be found. Show an error
         this.setState({
           tasks: [],

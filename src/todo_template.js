@@ -4,7 +4,7 @@ class Todo {
    * @param {object} args This argument is an object that
    * determines all the arguments required to create a todo
    * item in the app.
-   * 
+   *
    *
    */
   constructor({
@@ -40,7 +40,6 @@ class Todo {
           this.status = status
 
           this.id = id || this.genId()
-
         } else {
           throw Error(
             `Cannot create a todo with a non-existent parent. (Provided parent "${parent}" was not found)`
@@ -57,19 +56,25 @@ class Todo {
     let length = 16
     let res = ""
     for (let x = 0; x < length; x++) {
-      res += strings[Math.round(Math.random() * strings.length)]
+      res += strings[Math.floor(Math.random() * strings.length)]
     }
     return res
   }
 }
 
 class TodoList {
-  constructor(name, oncreated, id) {
+  constructor(name, oncreated, { id = null, onerror = undefined }) {
     window.database.getByIndex("lists", "name", name).onsuccess = event => {
       if (event.target.result) {
-        throw Error(
-          `The list ${name} already exists. Please  choose a different name`
-        )
+        if (onerror) {
+          onerror(
+            `The list ${name} already exists. Please  choose a different name`
+          )
+        } else {
+          throw Error(
+            `The list ${name} already exists. Please  choose a different name`
+          )
+        }
       } else {
         this.name = name
         this.id = id || this.genId()
@@ -85,7 +90,7 @@ class TodoList {
     let length = 16
     let res = ""
     for (let x = 0; x < length; x++) {
-      res += strings[Math.round(Math.random() * strings.length)]
+      res += strings[Math.floor(Math.random() * strings.length)]
     }
     return res
   }

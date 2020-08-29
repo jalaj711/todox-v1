@@ -193,25 +193,15 @@ class CreateNew extends React.Component {
             <Select
               labelId="list-choosing-label"
               id="list-chooser"
-              value={
-                this.state.lists &&
-                this.state.lists.indexOf(this.state.listname) > -1
-                  ? this.state.listname
-                  : -1
-              }
-              disabled={
-                !(
-                  this.state.lists &&
-                  this.state.lists.indexOf(this.state.listname) > -1
-                )
-              }
+              value={this.state.lists ? this.state.listname : -1}
+              disabled={!this.state.lists}
               onChange={this.updateListname}
               label="Choose where to add"
             >
               {this.state.lists ? (
                 this.state.lists.map(list => (
-                  <MenuItem value={list} key={list}>
-                    {list.capitalize()}
+                  <MenuItem value={list.id} key={list.id}>
+                    {list.name.capitalize()}
                   </MenuItem>
                 ))
               ) : (

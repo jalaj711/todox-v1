@@ -65,8 +65,8 @@ class db {
 
       //Create search indexes
       this.objectStores.lists.createIndex("name", "name", { unique: true })
-      this.objectStores.tasks.createIndex("name", "name", { unique: false })
-      this.objectStores.tasks.createIndex("date", "date", { unique: false })
+      this.objectStores.tasks.createIndex("title", "title", { unique: false })
+      this.objectStores.tasks.createIndex("deadline", "deadline", { unique: false })
       this.objectStores.tasks.createIndex("starred", "starred", {
         unique: false,
       })
@@ -201,11 +201,11 @@ class db {
    *
    * @returns {Array}
    */
-  getMultipleByKey(objStore, key, value, limit) {
+  getMultipleByKey(objStore, key, value, oncomplete, limit) {
     let store = this.db.transaction([objStore]).objectStore(objStore)
     let matched = []
 
-    store.openCursor().onsucces = evt => {
+    store.openCursor().onsuccess = evt => {
       var cursor = evt.target.result
       if (cursor) {
         if (cursor.value[key] === value) {
@@ -213,7 +213,11 @@ class db {
         }
         if (!limit || matched.length <= limit) {
           cursor.continue()
+        }else{
+          oncomplete(matched)
         }
+      }else{
+        oncomplete(matched)
       }
     }
     return matched

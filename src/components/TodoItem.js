@@ -1,5 +1,5 @@
 import React from "react"
-import { makeStyles } from "@material-ui/core/styles"
+import { withStyles } from "@material-ui/core/styles"
 import {
   Paper,
   Checkbox,
@@ -21,90 +21,93 @@ import {
   ViewDayOutlined,
 } from "@material-ui/icons"
 
-const useStyles = makeStyles(theme => ({
-    grow: {
-      flexGrow: 1,
-    },
-    paper: {
-      width: "-webkit-fill-available",
-      display: "flex",
-      alignItems: "center",
-      padding: 8,
-      marginTop: 8,
-    },
-    starred: {
-      fill: "#f7c331",
-      stroke: "#f7c331",
-    },
-  }))
-  
-export default function TodoItem(props) {
-    const classes = useStyles()
-    const [anchorEl, setAnchorEl] = React.useState(null)
-    const [starred, setStarred] = React.useState(props.task.starred)
-  
-    const handleClick = event => {
-      setAnchorEl(event.currentTarget)
+
+
+class TodoItem extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      anchorEl: null,
+      starred: props.task.starred,
+      done: props.task.done,
     }
-  
-    const handleClose = () => {
-      setAnchorEl(null)
-    }
-  
-    const toggleStar = () => {
-      setStarred(!starred)
-    }
-  
+    this.handleClick = this.handleClick.bind(this)
+    this.handleClose = this.handleClose.bind(this)
+    this.toggleStar = this.toggleStar.bind(this)
+  }
+
+  handleClick(event) {
+    this.setState({
+      ...this.state,
+      anchorEl: event.currentTarget,
+    })
+  }
+
+  handleClose() {
+    this.setState({
+      ...this.state,
+      anchorEl: null,
+    })
+  }
+
+  toggleStar() {
+    this.setState({
+      ...this.state,
+      starred: !this.state.starred,
+    })
+  }
+
+  render() {
     return (
-      <Paper className={classes.paper}>
+      <Paper className={this.props.classes.paper}>
         <Checkbox
           color="primary"
           aria-label="Mark as done"
-          checked={props.tasks.done}
+          checked={this.props.task.done}
         />
-        <div className={classes.grow}>
-          <Typography>{props.task.text}</Typography>
+        <div className={this.props.classes.grow}>
+          <Typography>{this.props.task.title}</Typography>
         </div>
-        <IconButton aria-label="Star this task" onClick={toggleStar}>
-          {starred ? (
-            <Star className={classes.starred} />
+        <IconButton aria-label="Star this task" onClick={this.toggleStar}>
+          {this.state.starred ? (
+            <Star className={this.props.classes.starred} />
           ) : (
             <StarBorderOutlined />
           )}
         </IconButton>
         <IconButton
           aria-haspopup="true"
-          onClick={handleClick}
+          onClick={this.handleClick}
           aria-label="Show more options"
         >
           <MoreVertOutlined />
         </IconButton>
         <Menu
           id="simple-menu"
-          anchorEl={anchorEl}
+          anchorEl={this.state.anchorEl}
           keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
+          open={Boolean(this.state.anchorEl)}
+          onClose={this.handleClose}
         >
-          <MenuItem onClick={handleClose} aria-label="View Details">
+          <MenuItem onClick={this.handleClose} aria-label="View Details">
             <ListItemIcon>
               <ViewDayOutlined />
             </ListItemIcon>
             <ListItemText primary="Details" />
           </MenuItem>
-          <MenuItem onClick={handleClose} aria-label="Edit">
+          <MenuItem onClick={this.handleClose} aria-label="Edit">
             <ListItemIcon>
               <EditOutlined />
             </ListItemIcon>
             <ListItemText primary="Edit" />
           </MenuItem>
-          <MenuItem onClick={handleClose} aria-label="Reminders">
+          <MenuItem onClick={this.handleClose} aria-label="Reminders">
             <ListItemIcon>
               <AccessAlarmOutlined />
             </ListItemIcon>
             <ListItemText primary="Add/Remove a reminder" />
           </MenuItem>
-          <MenuItem onClick={handleClose} aria-label="Delete this task">
+          <MenuItem onClick={this.handleClose} aria-label="Delete this task">
             <ListItemIcon>
               <DeleteOutlineOutlined />
             </ListItemIcon>
@@ -114,3 +117,21 @@ export default function TodoItem(props) {
       </Paper>
     )
   }
+}
+
+export default withStyles(theme => ({
+  grow: {
+    flexGrow: 1,
+  },
+  paper: {
+    width: "-webkit-fill-available",
+    display: "flex",
+    alignItems: "center",
+    padding: 8,
+    marginTop: 8,
+  },
+  starred: {
+    fill: "#f7c331",
+    stroke: "#f7c331",
+  },
+}))(TodoItem)

@@ -45,6 +45,7 @@ class CreateNew extends React.Component {
     this.updateReminderTime = this.updateReminderTime.bind(this)
     this.updateNotifDelta = this.updateNotifDelta.bind(this)
     this.validateDate = this.validateDate.bind(this)
+    this.createTodo = this.createTodo.bind(this)
   }
 
   componentDidMount() {
@@ -161,10 +162,66 @@ class CreateNew extends React.Component {
               "Cannot set reminder for a task that is due more than 25 days from now",
           })
         } else {
-          alert("Setting todo")
+          if (!window.database) {
+            import("../database").then(database => {
+              console.log("[indexedDB] Creating database instance")
+              let db = new database.default()
+              db.onsuccess = _evt => {
+                window.database = db
+                this.createTodo(date)
+              }
+            })
+          } else {
+            this.createTodo(date)
+          }
         }
       }
+    } else {
+      if (!window.database) {
+        import("../database").then(database => {
+          console.log("[indexedDB] Creating database instance")
+          let db = new database.default()
+          db.onsuccess = _evt => {
+            window.database = db
+            this.createTodo(null)
+          }
+        })
+      } else {
+        this.createTodo(null)
+      }
     }
+  }
+
+  createTodo(date) {
+    if (window.snackbar) {
+      window.snackbar.show({
+        text: "Creating todo...",
+        showActionButton: false,
+      })
+    }
+
+    import("../todo_template").then(todo_template => {
+      let todo = new todo_template.default.Todo({
+        title: document.getElementById("task-title").value,
+        description: document.getElementById("task-description").value,
+        parent: this.state.listname,
+        reminder: date,
+        deadline: this.state.setReminder ? this.state.reminder : null,
+        starred: this.state.importance,
+        done: false,
+        status: 0
+      }, () => {
+        window.database.add("tasks", todo).onsuccess = (evt) => {
+          if(evt.target.result){
+            window.snackbar.show({
+              text: `Todo added to ${this.state.listname}`,
+              showActionButton: false,
+            })
+            this.props.history.goBack()
+          }
+        }
+      })
+    })
   }
 
   render() {

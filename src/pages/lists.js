@@ -41,13 +41,13 @@ let Loader = () => {
  *
  * @param {*} props
  */
-let TodoList = props => (
-  <Suspense fallback={<Loader />}>
-    {props.forEach(task => (
+let TodoList = props => {
+  return <Suspense fallback={<Loader />}>
+    {props.tasks.map(task => (
       <TodoItem task={task} />
     ))}
   </Suspense>
-)
+}
 
 class List extends React.Component {
   /**
@@ -78,20 +78,17 @@ class List extends React.Component {
           window.setTitle(evt.target.result.name.capitalize())
         document.title = evt.target.result.name.capitalize()
         //Get the tasks
-        let tasks = window.database.getMultipleByKey(
-          "tasks",
-          "parent",
-          listname
-        )
-
-        //Change the state
-        this.setState({
-          //Create an error if there are no tasks in the list
-          error:
-            tasks.length === 0 ? "You have no tasks in this list yet" : null,
-          loaded: true,
-          tasks: tasks,
-          listname: listname,
+        window.database.getMultipleByKey("tasks", "parent", listname, tasks => {
+          console.log(tasks)
+          //Change the state
+          this.setState({
+            //Create an error if there are no tasks in the list
+            error:
+              tasks.length === 0 ? "You have no tasks in this list yet" : null,
+            loaded: true,
+            tasks: tasks,
+            listname: listname,
+          })
         })
       } else {
         if (window.setTitle) window.setTitle("List not found")

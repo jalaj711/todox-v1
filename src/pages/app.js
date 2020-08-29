@@ -2,6 +2,7 @@ import React, { Suspense } from "react"
 import { withStyles } from "@material-ui/core/styles"
 import { Backdrop, CircularProgress } from "@material-ui/core"
 import { Switch, Route } from "react-router-dom"
+import Snackbar from "../components/snackbar"
 import theme from "../theme"
 
 //Lazy load components
@@ -38,6 +39,7 @@ class Home extends React.Component {
   render() {
     return (
       <div className={this.props.classes.root}>
+        <Snackbar />
         <Suspense
           fallback={
             <Backdrop open={true}>

@@ -7,17 +7,20 @@ class Todo {
    *
    *
    */
-  constructor({
-    title,
-    parent,
-    description = null,
-    reminder = null,
-    deadline = null,
-    starred = false,
-    done = false,
-    status = 0,
-    id = null,
-  }) {
+  constructor(
+    {
+      title,
+      parent,
+      description = null,
+      reminder = null,
+      deadline = null,
+      starred = false,
+      done = false,
+      status = 0,
+      id = null,
+    },
+    onsuccess
+  ) {
     //These props are required
     if (title === null || parent === null) {
       throw Error(
@@ -34,12 +37,18 @@ class Todo {
           this.reminder = reminder
 
           //Deadline should be a date object
-          this.deadline = deadline.getMonth ? deadline : new Date(deadline)
+          this.deadline = deadline
+            ? deadline.getMonth
+              ? deadline
+              : new Date(deadline)
+            : null
           this.starred = starred
           this.done = done
           this.status = status
 
           this.id = id || this.genId()
+
+          if (typeof onsuccess === "function") onsuccess()
         } else {
           throw Error(
             `Cannot create a todo with a non-existent parent. (Provided parent "${parent}" was not found)`

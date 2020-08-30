@@ -44,7 +44,7 @@ let Loader = () => {
 let TodoList = props => {
   return <Suspense fallback={<Loader />}>
     {props.tasks.map(task => (
-      <TodoItem task={task} />
+      <TodoItem task={task} key={task.id} />
     ))}
   </Suspense>
 }

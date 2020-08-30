@@ -168,11 +168,11 @@ class CreateNew extends React.Component {
               let db = new database.default()
               db.onsuccess = _evt => {
                 window.database = db
-                this.createTodo(date)
+                this.createTodo(date, delta)
               }
             })
           } else {
-            this.createTodo(date)
+            this.createTodo(date, delta)
           }
         }
       }
@@ -192,7 +192,7 @@ class CreateNew extends React.Component {
     }
   }
 
-  createTodo(date) {
+  createTodo(date, delta) {
     if (window.snackbar) {
       window.snackbar.show({
         text: "Creating todo...",
@@ -209,12 +209,13 @@ class CreateNew extends React.Component {
         deadline: this.state.setReminder ? this.state.reminder : null,
         starred: this.state.importance,
         done: false,
-        status: 0
+        status: 0,
+        notifTimeDelta: delta
       }, () => {
         window.database.add("tasks", todo).onsuccess = (evt) => {
           if(evt.target.result){
             window.snackbar.show({
-              text: `Todo added to ${this.state.listname}`,
+              text: `Created todo.`,
               showActionButton: false,
             })
             this.props.history.goBack()

@@ -14,6 +14,7 @@ class Todo {
       description = null,
       reminder = null,
       deadline = null,
+      notifTimeDelta = null,
       starred = false,
       done = false,
       status = 0,
@@ -35,6 +36,7 @@ class Todo {
           this.parent = parent
           this.description = description
           this.reminder = reminder
+          this.notifTimeDelta = notifTimeDelta
 
           //Deadline should be a date object
           this.deadline = deadline
@@ -73,23 +75,32 @@ class Todo {
 
 class TodoList {
   constructor(name, oncreated, { id = null, onerror = undefined }) {
-    window.database.getByIndex("lists", "name", name).onsuccess = event => {
-      if (event.target.result) {
-        if (onerror) {
-          onerror(
-            `The list ${name} already exists. Please  choose a different name`
-          )
+    if (window.database) {
+      window.database.getByIndex("lists", "name", name).onsuccess = event => {
+        if (event.target.result) {
+          if (onerror) {
+            onerror(
+              `The list ${name} already exists. Please  choose a different name`
+            )
+          } else {
+            throw Error(
+              `The list ${name} already exists. Please  choose a different name`
+            )
+          }
         } else {
-          throw Error(
-            `The list ${name} already exists. Please  choose a different name`
-          )
+          this.name = name
+          this.id = id || this.genId()
+          this.members = []
+          console.log(name)
+          oncreated()
         }
-      } else {
-        this.name = name
-        this.id = id || this.genId()
-        this.members = []
-        oncreated()
       }
+    } else {
+      this.name = name
+      this.id = id || this.genId()
+      this.members = []
+      console.log(name)
+      oncreated()
     }
   }
   genId() {

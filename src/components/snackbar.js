@@ -59,7 +59,7 @@ export default function CustomSnackbar() {
           horizontal: "left",
         }}
         open={state.open}
-        autoHideDuration={6000}
+        autoHideDuration={4000}
         onClose={handleClose}
         message={state.text}
         action={

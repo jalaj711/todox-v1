@@ -109,7 +109,7 @@ class db {
   delete(objStore, id, onerror, onsuccess) {
     let transaction = this.db.transaction([objStore], "readwrite")
     transaction.onerrror =
-      onerror || (evt => console.log("[indexedDB] DB Add error: " + evt))
+      onerror || (evt => console.log("[indexedDB] DB Remove error: " + evt))
     transaction.oncomplete =
       onsuccess || (evt => console.log("[indexedDB] Task success: " + evt))
 
@@ -129,7 +129,7 @@ class db {
   get(objStore, id, onerror, onsuccess) {
     let transaction = this.db.transaction([objStore], "readwrite")
     transaction.onerrror =
-      onerror || (evt => console.log("[indexedDB] DB Add error: " + evt))
+      onerror || (evt => console.log("[indexedDB] DB Get error: " + evt))
     transaction.oncomplete =
       onsuccess || (evt => console.log("[indexedDB] Task success: " + evt))
 
@@ -152,7 +152,7 @@ class db {
   update(objStore, id, newData, onsuccess, onerror) {
     let transaction = this.db.transaction([objStore], "readwrite")
     transaction.onerrror =
-      onerror || (evt => console.log("[indexedDB] DB Add error: " + evt))
+      onerror || (evt => console.log("[indexedDB] DB Update error: " + evt))
     transaction.oncomplete =
       onsuccess || (evt => console.log("[indexedDB] Task success: " + evt))
 
@@ -180,7 +180,7 @@ class db {
   getByIndex(objStore, index, value, onerror, onsuccess) {
     let transaction = this.db.transaction([objStore], "readwrite")
     transaction.onerrror =
-      onerror || (evt => console.log("[indexedDB] DB Add error: " + evt))
+      onerror || (evt => console.log("[indexedDB] DB Search error: " + evt))
     transaction.oncomplete =
       onsuccess || (evt => console.log("[indexedDB] Task success: " + evt))
 

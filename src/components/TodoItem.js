@@ -1,53 +1,33 @@
 import React from "react"
 import { withStyles } from "@material-ui/core/styles"
 import {
-  Paper,
-  Checkbox,
+  AccordionActions,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Typography,
-  IconButton,
-  Menu,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
+  //  IconButton,
+  Divider,
+  Button,
 } from "@material-ui/core"
 //import { Link } from "react-router-dom"
 import {
-  StarBorderOutlined,
-  Star,
-  DeleteOutlineOutlined,
-  MoreVertOutlined,
-  AccessAlarmOutlined,
-  EditOutlined,
-  ViewDayOutlined,
+  //  StarBorderOutlined,
+  //  Star,
+  ExpandMoreOutlined,
 } from "@material-ui/icons"
-
-
+import clsx from "clsx"
 
 class TodoItem extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      anchorEl: null,
       starred: props.task.starred,
       done: props.task.done,
+      isOpen: false,
     }
-    this.handleClick = this.handleClick.bind(this)
-    this.handleClose = this.handleClose.bind(this)
     this.toggleStar = this.toggleStar.bind(this)
-  }
-
-  handleClick(event) {
-    this.setState({
-      ...this.state,
-      anchorEl: event.currentTarget,
-    })
-  }
-
-  handleClose() {
-    this.setState({
-      ...this.state,
-      anchorEl: null,
-    })
+    this.toggleState = this.toggleState.bind(this)
   }
 
   toggleStar() {
@@ -57,81 +37,159 @@ class TodoItem extends React.Component {
     })
   }
 
+  parseDate(date) {
+    let dte = new Date(date)
+    let prefix = n => (n < 10 ? "0" + n : n)
+    let month
+    switch (dte.getMonth()) {
+      case 0:
+        month = "Jan"
+        break
+      case 1:
+        month = "Feb"
+        break
+      case 2:
+        month = "Mar"
+        break
+      case 3:
+        month = "Apr"
+        break
+      case 4:
+        month = "May"
+        break
+      case 5:
+        month = "Jun"
+        break
+      case 6:
+        month = "Jul"
+        break
+      case 7:
+        month = "Aug"
+        break
+      case 8:
+        month = "Sep"
+        break
+      case 9:
+        month = "Oct"
+        break
+      case 10:
+        month = "Nov"
+        break
+      case 11:
+        month = "Dec"
+        break
+      default:
+        break
+    }
+    return `${prefix(dte.getDate())} ${month} ${prefix(
+      dte.getHours()
+    )}:${prefix(dte.getMinutes())}`
+  }
+
+  toggleState() {
+    this.setState({
+      ...this.state,
+      isOpen: !this.state.isOpen,
+    })
+  }
+
   render() {
     return (
-      <Paper className={this.props.classes.paper}>
-        <Checkbox
-          color="primary"
-          aria-label="Mark as done"
-          checked={this.props.task.done}
-        />
-        <div className={this.props.classes.grow}>
-          <Typography>{this.props.task.title}</Typography>
-        </div>
-        <IconButton aria-label="Star this task" onClick={this.toggleStar}>
-          {this.state.starred ? (
-            <Star className={this.props.classes.starred} />
-          ) : (
-            <StarBorderOutlined />
-          )}
-        </IconButton>
-        <IconButton
-          aria-haspopup="true"
-          onClick={this.handleClick}
-          aria-label="Show more options"
-        >
-          <MoreVertOutlined />
-        </IconButton>
-        <Menu
-          id="simple-menu"
-          anchorEl={this.state.anchorEl}
-          keepMounted
-          open={Boolean(this.state.anchorEl)}
-          onClose={this.handleClose}
-        >
-          <MenuItem onClick={this.handleClose} aria-label="View Details">
-            <ListItemIcon>
-              <ViewDayOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Details" />
-          </MenuItem>
-          <MenuItem onClick={this.handleClose} aria-label="Edit">
-            <ListItemIcon>
-              <EditOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Edit" />
-          </MenuItem>
-          <MenuItem onClick={this.handleClose} aria-label="Reminders">
-            <ListItemIcon>
-              <AccessAlarmOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Add/Remove a reminder" />
-          </MenuItem>
-          <MenuItem onClick={this.handleClose} aria-label="Delete this task">
-            <ListItemIcon>
-              <DeleteOutlineOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Delete" />
-          </MenuItem>
-        </Menu>
-      </Paper>
+      <div className={this.props.classes.root}>
+        <Accordion expanded={this.state.isOpen}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreOutlined />}
+            onClick={this.toggleState}
+          >
+            <Typography className={this.props.classes.heading}>
+              {this.props.task.title}
+            </Typography>
+            <div className={this.props.classes.grow} />
+            <div className={this.props.classes.reminderTiming}>
+              <Typography className={this.props.classes.secondaryHeading}>
+                {this.props.task.reminder
+                  ? this.parseDate(this.props.task.deadline)
+                  : ""}
+              </Typography>
+            </div>
+          </AccordionSummary>
+          <AccordionDetails className={this.props.classes.details}>
+            <div className={this.props.classes.fullWidth}>
+              <Typography variant="button">Description</Typography>
+              {this.props.task.description || <i>No description provided</i>}
+            </div>
+            <div className={this.props.classes.othDetails}>
+              <div className={this.props.classes.column}>
+                {new Date(this.props.task.reminder).toString()}
+              </div>
+              <div
+                className={clsx(
+                  this.props.classes.column,
+                  this.props.classes.helper
+                )}
+              >
+                <Typography variant="caption">
+                  Select your destination of choice
+                  <br />
+                </Typography>
+              </div>
+            </div>
+          </AccordionDetails>
+          <Divider />
+          <AccordionActions>
+            <Button size="small">Delete</Button>
+            <Button size="small" color="primary">
+              Edit
+            </Button>
+            <Button size="small" color="primary">
+              Mark as done
+            </Button>
+          </AccordionActions>
+        </Accordion>
+      </div>
     )
   }
 }
 
 export default withStyles(theme => ({
+  root: {
+    width: "100%",
+    marginBottom: theme.spacing(1),
+  },
   grow: {
     flexGrow: 1,
   },
-  paper: {
-    width: "-webkit-fill-available",
-    display: "flex",
-    alignItems: "center",
-    padding: 8,
-    marginTop: 8,
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
   },
-  starred: {
-    fill: "#f7c331",
-    stroke: "#f7c331",
+  secondaryHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+  },
+  icon: {
+    verticalAlign: "bottom",
+    height: 20,
+    width: 20,
+  },
+  details: {
+    alignItems: "center",
+    display: "block",
+  },
+  column: {
+    flexBasis: "33.33%",
+  },
+  helper: {
+    borderLeft: `2px solid ${theme.palette.divider}`,
+    padding: theme.spacing(1, 2),
+  },
+  reminderTiming: {
+    flexBasis: "33.33%",
+    minWidth: "fit-content",
+  },
+  fullWidth: {
+    width: "100%",
+  },
+  othDetails: {
+    display: "flex",
   },
 }))(TodoItem)

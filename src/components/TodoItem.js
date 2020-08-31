@@ -12,8 +12,9 @@ import {
 } from "@material-ui/core"
 //import { Link } from "react-router-dom"
 import {
-  //  StarBorderOutlined,
-  //  Star,
+  DeleteOutlined,
+  CheckOutlined,
+  EditOutlined,
   ExpandMoreOutlined,
 } from "@material-ui/icons"
 import clsx from "clsx"
@@ -86,14 +87,14 @@ class TodoItem extends React.Component {
     )}:${prefix(dte.getMinutes())}`
   }
 
-  parseNotifDelta(date){
-    let delta = date*10
-    if(delta < 60){
+  parseNotifDelta(date) {
+    let delta = date * 10
+    if (delta < 60) {
       return `${delta} min before`
-    } else if (delta / 60 < 24){
-      return `${Math.round(delta/60)} hr(s) before`
-    }else{
-      return `${Math.round(delta/(60*24))} day(s) before`
+    } else if (delta / 60 < 24) {
+      return `${Math.round(delta / 60)} hr(s) before`
+    } else {
+      return `${Math.round(delta / (60 * 24))} day(s) before`
     }
   }
 
@@ -126,44 +127,42 @@ class TodoItem extends React.Component {
           </AccordionSummary>
           <AccordionDetails className={this.props.classes.details}>
             <div className={this.props.classes.fullWidth}>
-              <Typography variant="button">Description</Typography><br />
+              <Typography variant="button" className={this.props.classes.secHeading3}>Description</Typography>
+              <br />
               <div className={this.props.classes.description}>
-              {this.props.task.description || <i>No description provided</i>}
+                {this.props.task.description || <i>No description provided</i>}
               </div>
             </div>
             <div className={this.props.classes.othDetails}>
               <div className={this.props.classes.column}>
-                <Typography variant="button">Due At</Typography><br />
+                <Typography variant="button" className={this.props.classes.secHeading3}>Due At</Typography>
+                <br />
                 <div className={this.props.classes.description}>
-                  {this.parseDate(this.props.task.reminder)}
+                  {this.parseDate(this.props.task.deadline)}
                 </div>
               </div>
               <div className={this.props.classes.column}>
-                <Typography variant="button">Reminder</Typography><br />
+                <Typography variant="button" className={this.props.classes.secHeading3}>Reminder</Typography>
+                <br />
                 <div className={this.props.classes.description}>
                   {this.parseNotifDelta(this.props.task.notifTimeDelta)}
                 </div>
               </div>
-              <div
-                className={clsx(
-                  this.props.classes.column,
-                  this.props.classes.helper
-                )}
-              >
-                <Typography variant="caption">
-                  
-                  <br />
-                </Typography>
-              </div>
+              
             </div>
           </AccordionDetails>
           <Divider />
           <AccordionActions>
-            <Button size="small">Delete</Button>
-            <Button size="small" color="secondary">
+            <Button
+              startIcon={<DeleteOutlined />}
+              size="small"
+            >
+              Delete
+            </Button>
+            <Button startIcon={<EditOutlined />} size="small" color="secondary">
               Edit
             </Button>
-            <Button size="small" color="primary">
+            <Button startIcon={<CheckOutlined />} size="small" color="primary">
               Mark as done
             </Button>
           </AccordionActions>
@@ -180,13 +179,17 @@ export default withStyles(theme => ({
   },
   grow: {
     flexGrow: 1,
-    minWidth: theme.spacing(1)
+    minWidth: theme.spacing(1),
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
   },
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+  },
+  secHeading3: {
+    fontSize: theme.typography.pxToRem(12),
     color: theme.palette.text.secondary,
   },
   icon: {
@@ -201,10 +204,6 @@ export default withStyles(theme => ({
   column: {
     flexBasis: "33.33%",
   },
-  helper: {
-    borderLeft: `2px solid ${theme.palette.divider}`,
-    padding: theme.spacing(1, 2),
-  },
   reminderTiming: {
     minWidth: "fit-content",
   },
@@ -215,6 +214,6 @@ export default withStyles(theme => ({
     display: "flex",
   },
   description: {
-    marginLeft: theme.spacing(1)
-  }
+    marginLeft: theme.spacing(1),
+  },
 }))(TodoItem)

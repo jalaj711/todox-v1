@@ -322,8 +322,9 @@ class DesktopMenu extends React.Component {
               margin="dense"
               id="add-list-to-db"
               label="List tittle"
-              type="email"
+              type="text"
               fullWidth
+              autoComplete="off"
               error={Boolean(this.state.addError)}
               helperText={this.state.addError}
             />

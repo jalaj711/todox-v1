@@ -373,7 +373,8 @@ class MobileMenu extends React.Component {
               margin="dense"
               id="add-list-to-db"
               label="List tittle"
-              type="email"
+              type="text"
+              autoComplete="off"
               fullWidth
               error={Boolean(this.state.addError)}
               helperText={this.state.addError}

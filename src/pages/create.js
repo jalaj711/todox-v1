@@ -234,12 +234,14 @@ class CreateNew extends React.Component {
             variant="outlined"
             label="Enter task name"
             id="task-title"
+            autoComplete="off"
             error={this.state.nameError ? true : false}
             helperText={this.state.nameError || ""}
           />
           <TextField
             className={this.classes.input}
             variant="outlined"
+            autoComplete="off"
             id="task-description"
             label="Enter task details (Optional)"
             multiline

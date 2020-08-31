@@ -1,5 +1,5 @@
-![Build](https://github.com/codegods/todox/workflows/Build/badge.svg)
-![Deploy](https://github.com/codegods/todox/workflows/Deploy/badge.svg)
+![Build](https://github.com/jalaj-k/todox/workflows/Build/badge.svg)
+![Deploy](https://github.com/jalaj-k/todox/workflows/Deploy/badge.svg)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

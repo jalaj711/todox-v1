@@ -79,7 +79,6 @@ class List extends React.Component {
         document.title = evt.target.result.name.capitalize()
         //Get the tasks
         window.database.getMultipleByKey("tasks", "parent", listname, tasks => {
-          console.log(tasks)
           //Change the state
           this.setState({
             //Create an error if there are no tasks in the list

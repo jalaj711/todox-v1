@@ -17,7 +17,6 @@ import {
   EditOutlined,
   ExpandMoreOutlined,
 } from "@material-ui/icons"
-import clsx from "clsx"
 
 class TodoItem extends React.Component {
   constructor(props) {

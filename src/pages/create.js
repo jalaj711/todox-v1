@@ -227,7 +227,7 @@ class CreateNew extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className={this.props.classes.root}>
         <form autoComplete="false">
           <TextField
             className={this.classes.input}
@@ -365,6 +365,7 @@ class CreateNew extends React.Component {
 export default withStyles(theme => ({
   root: {
     display: "block",
+    maxHeight: "calc(85vh - 70px)"
   },
   formControl: {
     margin: theme.spacing(1),

@@ -188,6 +188,7 @@ class List extends React.Component {
 export default withStyles(theme => ({
   root: {
     display: "block",
+    maxHeight: "80vh"
   },
   grow: {
     flexGrow: 1,

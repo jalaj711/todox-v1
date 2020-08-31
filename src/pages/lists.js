@@ -104,11 +104,12 @@ class List extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.state !== nextState) {
-      return true
+    if (nextProps.match.params.id !== this.state.listname) {
+      this.updateListData(nextProps)
+      return false
     } else {
-      if (nextProps.match.params.id !== this.state.listname) {
-        this.updateListData(nextProps)
+      if (this.state !== nextState) {
+        return true
       }
       return false
     }

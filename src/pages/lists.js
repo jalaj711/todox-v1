@@ -42,11 +42,13 @@ let Loader = () => {
  * @param {*} props
  */
 let TodoList = props => {
-  return <Suspense fallback={<Loader />}>
-    {props.tasks.map(task => (
-      <TodoItem task={task} key={task.id} />
-    ))}
-  </Suspense>
+  return (
+    <Suspense fallback={<Loader />}>
+      {props.tasks.map(task => (
+        <TodoItem task={task} key={task.id} unMount={props.unMount} />
+      ))}
+    </Suspense>
+  )
 }
 
 class List extends React.Component {
@@ -78,7 +80,12 @@ class List extends React.Component {
           window.setTitle(evt.target.result.name.capitalize())
         document.title = evt.target.result.name.capitalize()
         //Get the tasks
-        window.database.getMultipleByKey("tasks", "parent", listname, tasks => {
+        window.database.getAllByIndex(
+          "tasks",
+          "parent",
+          listname
+        ).onsuccess = evt => {
+          let tasks = evt.target.result
           //Change the state
           this.setState({
             //Create an error if there are no tasks in the list
@@ -88,7 +95,7 @@ class List extends React.Component {
             tasks: tasks,
             listname: listname,
           })
-        })
+        }
       } else {
         if (window.setTitle) window.setTitle("List not found")
         document.title = "List not found"
@@ -150,7 +157,10 @@ class List extends React.Component {
               </div>
             ) : (
               //Load the todos
-              <TodoList tasks={this.state.tasks} />
+              <TodoList
+                tasks={this.state.tasks}
+                unMount={this.updateListData}
+              />
             )
           ) : (
             //Show the loader
@@ -188,7 +198,7 @@ class List extends React.Component {
 export default withStyles(theme => ({
   root: {
     display: "block",
-    maxHeight: "80vh"
+    maxHeight: "80vh",
   },
   grow: {
     flexGrow: 1,

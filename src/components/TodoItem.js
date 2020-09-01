@@ -22,12 +22,33 @@ class TodoItem extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      starred: props.task.starred,
-      done: props.task.done,
       isOpen: false,
     }
     this.toggleStar = this.toggleStar.bind(this)
     this.toggleState = this.toggleState.bind(this)
+    this.markAsDone = this.markAsDone.bind(this)
+    this.task = this.props.task
+  }
+
+  markAsDone() {
+    let markDone = () => {
+      this.task.done = true
+      this.task.status = 2
+      window.database.update("tasks", this.task.id, this.task, () => {
+        if (this.props.unMount) this.props.unMount()
+      })
+    }
+    if (!window.database) {
+      import("../database").then(database => {
+        console.log("[indexedDB] Creating database instance")
+        new database.default().onsuccess = evt => {
+          window.database = evt.target.result
+          markDone()
+        }
+      })
+    } else {
+      markDone()
+    }
   }
 
   toggleStar() {
@@ -113,55 +134,69 @@ class TodoItem extends React.Component {
             onClick={this.toggleState}
           >
             <Typography className={this.props.classes.heading}>
-              {this.props.task.title}
+              {this.task.title}
             </Typography>
             <div className={this.props.classes.grow} />
             <div className={this.props.classes.reminderTiming}>
               <Typography className={this.props.classes.secondaryHeading}>
-                {this.props.task.reminder
-                  ? this.parseDate(this.props.task.deadline)
-                  : ""}
+                {this.task.reminder ? this.parseDate(this.task.deadline) : ""}
               </Typography>
             </div>
           </AccordionSummary>
           <AccordionDetails className={this.props.classes.details}>
             <div className={this.props.classes.fullWidth}>
-              <Typography variant="button" className={this.props.classes.secHeading3}>Description</Typography>
+              <Typography
+                variant="button"
+                className={this.props.classes.secHeading3}
+              >
+                Description
+              </Typography>
               <br />
               <div className={this.props.classes.description}>
-                {this.props.task.description || <i>No description provided</i>}
+                {this.task.description || <i>No description provided</i>}
               </div>
             </div>
             <div className={this.props.classes.othDetails}>
               <div className={this.props.classes.column}>
-                <Typography variant="button" className={this.props.classes.secHeading3}>Due At</Typography>
+                <Typography
+                  variant="button"
+                  className={this.props.classes.secHeading3}
+                >
+                  Due At
+                </Typography>
                 <br />
                 <div className={this.props.classes.description}>
-                  {this.parseDate(this.props.task.deadline)}
+                  {this.parseDate(this.task.deadline)}
                 </div>
               </div>
               <div className={this.props.classes.column}>
-                <Typography variant="button" className={this.props.classes.secHeading3}>Reminder</Typography>
+                <Typography
+                  variant="button"
+                  className={this.props.classes.secHeading3}
+                >
+                  Reminder
+                </Typography>
                 <br />
                 <div className={this.props.classes.description}>
-                  {this.parseNotifDelta(this.props.task.notifTimeDelta)}
+                  {this.parseNotifDelta(this.task.notifTimeDelta)}
                 </div>
               </div>
-              
             </div>
           </AccordionDetails>
           <Divider />
           <AccordionActions>
-            <Button
-              startIcon={<DeleteOutlined />}
-              size="small"
-            >
+            <Button startIcon={<DeleteOutlined />} size="small">
               Delete
             </Button>
             <Button startIcon={<EditOutlined />} size="small" color="secondary">
               Edit
             </Button>
-            <Button startIcon={<CheckOutlined />} size="small" color="primary">
+            <Button
+              startIcon={<CheckOutlined />}
+              size="small"
+              color="primary"
+              onClick={this.markAsDone}
+            >
               Mark as done
             </Button>
           </AccordionActions>

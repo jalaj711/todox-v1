@@ -91,7 +91,6 @@ class TodoList {
           this.name = name
           this.id = id || this.genId()
           this.members = []
-          console.log(name)
           oncreated()
         }
       }

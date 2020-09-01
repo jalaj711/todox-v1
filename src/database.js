@@ -159,7 +159,7 @@ class db {
     let objectStore = transaction.objectStore(objStore)
     objectStore.get(id).onsuccess = evt => {
       var data = evt.target.result
-      data = { ...data, newData }
+      data = { ...data, ...newData }
 
       objectStore.put(data).onsuccess = (evt) => {
         if (onsuccess) onsuccess()

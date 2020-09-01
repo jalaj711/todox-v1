@@ -66,7 +66,7 @@ class db {
       //Create search indexes
       this.objectStores.lists.createIndex("name", "name", { unique: true })
       this.objectStores.tasks.createIndex("title", "title", { unique: false })
-      this.objectStores.tasks.createIndex("deadline", "deadline", { unique: false })
+      this.objectStores.tasks.createIndex("parent", "parent", { unique: false })
       this.objectStores.tasks.createIndex("starred", "starred", {
         unique: false,
       })
@@ -154,14 +154,16 @@ class db {
     transaction.onerrror =
       onerror || (evt => console.log("[indexedDB] DB Update error: " + evt))
     transaction.oncomplete =
-      onsuccess || (evt => console.log("[indexedDB] Task success: " + evt))
+      (evt => console.log("[indexedDB] Task success: " + evt))
 
     let objectStore = transaction.objectStore(objStore)
     objectStore.get(id).onsuccess = evt => {
       var data = evt.target.result
       data = { ...data, newData }
 
-      return objectStore.put(data)
+      objectStore.put(data).onsuccess = (evt) => {
+        if (onsuccess) onsuccess()
+      }
     }
   }
 
@@ -185,6 +187,26 @@ class db {
       onsuccess || (evt => console.log("[indexedDB] Task success: " + evt))
 
     return transaction.objectStore(objStore).index(index).get(value)
+  }
+  /**
+   * 
+   * @param {String} objStore 
+   * @param {string} index 
+   * @param {string} value 
+   * @param {Function} onsuccess 
+   * @param {Function} onerror 
+   * 
+   * Get all the docs that are there in the given objectStore,
+   * filtered by the value
+   */
+  getAllByIndex(objStore, index, value, onsuccess, onerror){
+    let transaction = this.db.transaction([objStore], "readwrite")
+    transaction.onerrror =
+      onerror || (evt => console.log("[indexedDB] DB Search error: " + evt))
+    transaction.oncomplete =
+      onsuccess || (evt => console.log("[indexedDB] Task success: " + evt))
+
+    return transaction.objectStore(objStore).index(index).getAll(value)
   }
 
   /**

@@ -159,9 +159,7 @@ class db {
     let objectStore = transaction.objectStore(objStore)
     objectStore.get(id).onsuccess = evt => {
       var data = evt.target.result
-      console.log(data, newData)
       data = { ...data, ...newData }
-      console.log(data)
 
       objectStore.put(data).onsuccess = (evt) => {
         if (onsuccess) onsuccess()

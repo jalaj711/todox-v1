@@ -259,7 +259,7 @@ class MobileMenu extends React.Component {
                 <DrawerItem
                 className={this.props.classes.a}
                   handleDrawer={this.handleDrawerToggle}
-                  link="/todox/lists/starred"
+                  link="/todox/starred"
                   text="Starred Tasks"
                   Icon={StarIcon}
                 />

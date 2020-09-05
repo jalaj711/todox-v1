@@ -24,9 +24,13 @@ class db {
            */
           import("./todo_template").then(todo_template => {
             ;["today", "bills", "shopping", "work"].forEach(name => {
-              let instance = new todo_template.default.TodoList(name, () => {
-                this.add("lists", instance)
-              }, {id: name, })
+              let instance = new todo_template.default.TodoList(
+                name,
+                () => {
+                  this.add("lists", instance)
+                },
+                { id: name }
+              )
             })
           })
         } catch (e) {
@@ -65,7 +69,7 @@ class db {
 
       //Create search indexes
       this.objectStores.lists.createIndex("name", "name", { unique: true })
-      this.objectStores.tasks.createIndex("title", "title", { unique: false })
+      this.objectStores.tasks.createIndex("status", "status", { unique: false })
       this.objectStores.tasks.createIndex("parent", "parent", { unique: false })
       this.objectStores.tasks.createIndex("starred", "starred", {
         unique: false,
@@ -153,15 +157,15 @@ class db {
     let transaction = this.db.transaction([objStore], "readwrite")
     transaction.onerrror =
       onerror || (evt => console.log("[indexedDB] DB Update error: " + evt))
-    transaction.oncomplete =
-      (evt => console.log("[indexedDB] Task success: " + evt))
+    transaction.oncomplete = evt =>
+      console.log("[indexedDB] Task success: " + evt)
 
     let objectStore = transaction.objectStore(objStore)
     objectStore.get(id).onsuccess = evt => {
       var data = evt.target.result
       data = { ...data, ...newData }
 
-      objectStore.put(data).onsuccess = (evt) => {
+      objectStore.put(data).onsuccess = evt => {
         if (onsuccess) onsuccess()
       }
     }
@@ -189,17 +193,17 @@ class db {
     return transaction.objectStore(objStore).index(index).get(value)
   }
   /**
-   * 
-   * @param {String} objStore 
-   * @param {string} index 
-   * @param {string} value 
-   * @param {Function} onsuccess 
-   * @param {Function} onerror 
-   * 
+   *
+   * @param {String} objStore
+   * @param {string} index
+   * @param {string} value
+   * @param {Function} onsuccess
+   * @param {Function} onerror
+   *
    * Get all the docs that are there in the given objectStore,
    * filtered by the value
    */
-  getAllByIndex(objStore, index, value, onsuccess, onerror){
+  getAllByIndex(objStore, index, value, onsuccess, onerror) {
     let transaction = this.db.transaction([objStore], "readwrite")
     transaction.onerrror =
       onerror || (evt => console.log("[indexedDB] DB Search error: " + evt))
@@ -235,10 +239,10 @@ class db {
         }
         if (!limit || matched.length <= limit) {
           cursor.continue()
-        }else{
+        } else {
           oncomplete(matched)
         }
-      }else{
+      } else {
         oncomplete(matched)
       }
     }
@@ -316,7 +320,7 @@ class db {
         if (!limit || matched.length <= limit) {
           cursor.continue()
         }
-      }else{
+      } else {
         oncomplete(matched)
       }
     }

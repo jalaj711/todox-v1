@@ -66,25 +66,20 @@ class List extends React.Component {
       error: false,
       loaded: false,
       tasks: [],
-      listname: props.match.params.id,
     }
     this.updateListData = this.updateListData.bind(this)
   }
 
   updateListData() {
-    let listname = this.props.match.params.id
 
-    //Check whether this list exists or not
-    window.database.get("lists", listname).onsuccess = evt => {
-      if (evt.target.result) {
         if (window.setTitle)
-          window.setTitle(evt.target.result.name.capitalize())
-        document.title = evt.target.result.name.capitalize()
+          window.setTitle("Starred tasks")
+        document.title = "Starred tasks"
         //Get the tasks
         window.database.getAllByIndex(
           "tasks",
-          "parent",
-          listname
+          "starred",
+          1
         ).onsuccess = evt => {
           let tasks = evt.target.result
 
@@ -113,21 +108,8 @@ class List extends React.Component {
               tasks.length === 0 ? "You have no tasks in this list yet" : null,
             loaded: true,
             tasks: tasks,
-            listname: listname,
           })
         }
-      } else {
-        if (window.setTitle) window.setTitle("List not found")
-        document.title = "List not found"
-        // The requested list could not be found. Show an error
-        this.setState({
-          tasks: [],
-          loaded: true,
-          error: "This list was not found, please create it first",
-          listname: listname,
-        })
-      }
-    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {

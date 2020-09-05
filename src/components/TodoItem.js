@@ -128,7 +128,7 @@ class TodoItem extends React.Component {
   render() {
     return (
       <div className={this.props.classes.root}>
-        <Accordion expanded={this.state.isOpen}>
+        <Accordion expanded={this.state.isOpen} className={this.task.starred ? this.props.classes.starred : ""}>
           <AccordionSummary
             expandIcon={<ExpandMoreOutlined />}
             onClick={this.toggleState}
@@ -237,6 +237,9 @@ export default withStyles(theme => ({
   },
   column: {
     flexBasis: "33.33%",
+  },
+  starred: {
+    borderLeft: "3px solid yellow"
   },
   reminderTiming: {
     minWidth: "fit-content",

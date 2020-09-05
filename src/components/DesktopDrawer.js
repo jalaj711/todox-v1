@@ -222,7 +222,7 @@ class DesktopMenu extends React.Component {
                   Icon={DayIcon}
                 />
                 <DrawerItem
-                  link="/todox/lists/starred"
+                  link="/todox/starred"
                   text="Starred Tasks"
                   Icon={StarIcon}
                 />

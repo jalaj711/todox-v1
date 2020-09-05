@@ -47,6 +47,7 @@ class Todo {
           this.starred = starred
           this.done = done
           this.status = status
+          this.timeStamp = new Date()
 
           this.id = id || this.genId()
 

@@ -13,6 +13,7 @@ let DesktopDrawer = React.lazy(() => import("../components/DesktopDrawer"))
 let Index = React.lazy(() => import("./index"))
 let Lists = React.lazy(() => import("./lists"))
 let Create = React.lazy(() => import("./create"))
+let Starred = React.lazy(() => import("./starred"))
 
 const drawerWidth = 240
 
@@ -55,6 +56,7 @@ class Home extends React.Component {
               <Route path="/todox" exact component={Index} />
               <Route path="/todox/lists/:id" component={Lists} />
               <Route path="/todox/new/:id" component={Create} />
+              <Route path="/todox/starred" component={Starred} />
             </Switch>
           </main>
         </Suspense>

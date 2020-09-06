@@ -27,6 +27,7 @@ class TodoItem extends React.Component {
     this.toggleStar = this.toggleStar.bind(this)
     this.toggleState = this.toggleState.bind(this)
     this.markAsDone = this.markAsDone.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
     this.task = this.props.task
   }
 
@@ -125,10 +126,43 @@ class TodoItem extends React.Component {
     })
   }
 
+  handleDelete() {
+    let deleteTask = () => {
+      window.database.delete("tasks", this.task.id).onsuccess = () => {
+        if (this.props.unMount) this.props.unMount()
+      }
+    }
+
+    if (window.confirm) {
+      window.confirm(
+        {
+          title: "Delete Task?",
+          text: `Are you sure you want to delete the task "${this.task.title}"? This task will NOT be marked as done or pending, it will be deleted from the database. This action is irreversible.`,
+        },
+        () => {
+          if (!window.database) {
+            import("../database").then(database => {
+              console.log("[indexedDB] Creating database instance")
+              new database.default().onsuccess = evt => {
+                window.database = evt.target.result
+                deleteTask()
+              }
+            })
+          } else {
+            deleteTask()
+          }
+        }
+      )
+    }
+  }
+
   render() {
     return (
       <div className={this.props.classes.root}>
-        <Accordion expanded={this.state.isOpen} className={this.task.starred ? this.props.classes.starred : ""}>
+        <Accordion
+          expanded={this.state.isOpen}
+          className={this.task.starred ? this.props.classes.starred : ""}
+        >
           <AccordionSummary
             expandIcon={<ExpandMoreOutlined />}
             onClick={this.toggleState}
@@ -185,7 +219,11 @@ class TodoItem extends React.Component {
           </AccordionDetails>
           <Divider />
           <AccordionActions>
-            <Button startIcon={<DeleteOutlined />} size="small">
+            <Button
+              startIcon={<DeleteOutlined />}
+              size="small"
+              onClick={this.handleDelete}
+            >
               Delete
             </Button>
             <Button startIcon={<EditOutlined />} size="small" color="secondary">
@@ -239,7 +277,7 @@ export default withStyles(theme => ({
     flexBasis: "33.33%",
   },
   starred: {
-    borderLeft: "3px solid yellow"
+    borderLeft: "3px solid yellow",
   },
   reminderTiming: {
     minWidth: "fit-content",

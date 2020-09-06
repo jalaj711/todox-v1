@@ -33,13 +33,11 @@ export default function CustomSnackbar() {
     },
   }
 
-  let click = (evt) => {
+  let click = evt => {
     handleClose()
-    try{
+    try {
       state.actionButtonClickCallback(evt)
-    }catch(e){
-
-    }
+    } catch (e) {}
   }
   let handleClose = (evt, reason) => {
     if (reason === "clickaway") {

@@ -20,12 +20,6 @@ import dateDelta from "date-fns/differenceInDays"
 //import { Link } from "react-router-dom"
 
 class CreateNew extends React.Component {
-  /**
-   * This component is the page where all the individual
-   * todos are created
-   *
-   * @param {*} props
-   */
 
   state = {
     lists: [],

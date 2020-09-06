@@ -6,11 +6,10 @@ import {
   AccordionSummary,
   AccordionDetails,
   Typography,
-  //  IconButton,
   Divider,
   Button,
 } from "@material-ui/core"
-//import { Link } from "react-router-dom"
+import { Link } from "react-router-dom"
 import {
   DeleteOutlined,
   CheckOutlined,
@@ -226,9 +225,16 @@ class TodoItem extends React.Component {
             >
               Delete
             </Button>
-            <Button startIcon={<EditOutlined />} size="small" color="secondary">
-              Edit
-            </Button>
+
+            <Link to={`/todox/edit/${this.task.id}`}>
+              <Button
+                startIcon={<EditOutlined />}
+                size="small"
+                color="secondary"
+              >
+                Edit
+              </Button>
+            </Link>
             <Button
               startIcon={<CheckOutlined />}
               size="small"

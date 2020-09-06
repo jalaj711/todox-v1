@@ -1,8 +1,7 @@
 import React, { Suspense } from "react"
 import { makeStyles, withStyles } from "@material-ui/core/styles"
-import { Paper, Typography, Fab } from "@material-ui/core"
-import { ErrorOutlineOutlined, AddOutlined } from "@material-ui/icons"
-import { Link } from "react-router-dom"
+import { Paper, Typography } from "@material-ui/core"
+import { ErrorOutlineOutlined } from "@material-ui/icons"
 import { Skeleton } from "@material-ui/lab"
 import diff from "date-fns/differenceInMinutes"
 
@@ -52,7 +51,7 @@ let TodoList = props => {
   )
 }
 
-class List extends React.Component {
+class Viewby extends React.Component {
   /**
    * This component is the actual 'list' where all the individual
    * components are rendered.
@@ -61,84 +60,122 @@ class List extends React.Component {
    */
   constructor(props) {
     super(props)
+    let status
+    switch (this.props.match.params.id) {
+      case "completed":
+        status = 2
+        break
+      case "pending":
+        status = 0
+        break
+      case "missing":
+        status = 1
+        break
+      default:
+        status = 2
+        break
+    }
     this.classes = this.props.classes
     this.state = {
       error: false,
       loaded: false,
       tasks: [],
-      listname: props.match.params.id,
+      statusText: this.props.match.params.id.capitalize(),
+      status,
     }
     this.updateListData = this.updateListData.bind(this)
   }
 
-  updateListData() {
-    let listname = this.props.match.params.id
+  updateListData(props) {
+    props = props || this.props
+    let status
+    switch (props.match.params.id) {
+      case "completed":
+        status = 2
+        break
+      case "pending":
+        status = 0
+        break
+      case "missing":
+        status = 1
+        break
+      default:
+        status = 2
+        break
+    }
 
-    //Check whether this list exists or not
-    window.database.get("lists", listname).onsuccess = evt => {
-      if (evt.target.result) {
-        if (window.setTitle)
-          window.setTitle(evt.target.result.name.capitalize())
-        document.title = evt.target.result.name.capitalize()
-        //Get the tasks
-        window.database.getAllByIndex(
-          "tasks",
-          "parent",
-          listname
-        ).onsuccess = evt => {
-          let tasks = evt.target.result
+    let statusText = props.match.params.id.capitalize()
 
-          tasks = tasks.filter(elem => (elem.done ? false : true))
-          tasks.sort((a, b) => {
-            if (a.deadline) {
-              if (b.deadline) {
-                let d = diff(a.deadline, b.deadline)
-                return d > 0 ? 1 : (d < 0 ? -1 : 0)
-              } else {
-                let d = diff(a.deadline, b.timeStamp)
-                return d > 0 ? 1 : (d < 0 ? -1 : 0)
-              }
-            } else if (b.deadline) {
-              let d = diff(a.timeStamp, b.deadline)
-              return d > 0 ? 1 : (d < 0 ? -1 : 0)
-            } else {
-              let d = diff(a.timeStamp, b.timeStamp)
-              return d > 0 ? 1 : (d < 0 ? -1 : 0)
-            }
-          })
-          //Change the state
-          this.setState({
-            //Create an error if there are no tasks in the list
-            error:
-              tasks.length === 0 ? "You have no tasks in this list yet" : null,
-            loaded: true,
-            tasks: tasks,
-            listname: listname,
-          })
+    if (window.setTitle) window.setTitle(`${statusText} tasks`)
+    document.title = `${statusText} tasks`
+    //Get the tasks
+    window.database.getAllByIndex(
+      "tasks",
+      "status",
+      status
+    ).onsuccess = evt => {
+      let tasks = evt.target.result
+      tasks.sort((a, b) => {
+        if (a.deadline) {
+          if (b.deadline) {
+            let d = diff(a.deadline, b.deadline)
+            return d > 0 ? 1 : d < 0 ? -1 : 0
+          } else {
+            let d = diff(a.deadline, b.timeStamp)
+            return d > 0 ? 1 : d < 0 ? -1 : 0
+          }
+        } else if (b.deadline) {
+          let d = diff(a.timeStamp, b.deadline)
+          return d > 0 ? 1 : d < 0 ? -1 : 0
+        } else {
+          let d = diff(a.timeStamp, b.timeStamp)
+          return d > 0 ? 1 : d < 0 ? -1 : 0
         }
-      } else {
-        if (window.setTitle) window.setTitle("List not found")
-        document.title = "List not found"
-        // The requested list could not be found. Show an error
-        this.setState({
-          tasks: [],
-          loaded: true,
-          error: "This list was not found, please create it first",
-          listname: listname,
-        })
-      }
+      })
+      //Change the state
+      this.setState({
+        //Create an error if there are no tasks in the list
+        error: tasks.length === 0 ? "You have no tasks in this list yet" : null,
+        loaded: true,
+        tasks: tasks,
+      })
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.match.params.id !== this.state.listname) {
-      this.updateListData()
+    if (nextProps.match.params.id !== this.props.match.params.id) {
+      this.updateListData(nextProps)
       return false
     } else {
       if (this.state !== nextState) {
         return true
       }
       return false
+    }
+  }
+
+  componentDidUpdate(props, state) {
+    if (props.match.params.id !== this.props.match.params.id) {
+      let status
+      switch (this.props.match.params.id) {
+        case "completed":
+          status = 2
+          break
+        case "pending":
+          status = 0
+          break
+        case "missing":
+          status = 1
+          break
+        default:
+          status = 2
+          break
+      }
+      this.setState({
+        ...this.state,
+        statusText: this.props.match.params.id.capitalize(),
+        status,
+      })
     }
   }
 
@@ -187,26 +224,6 @@ class List extends React.Component {
             <Loader />
           )
         }
-
-        {
-          /**
-           * This is a fab to add more tasks to this list.
-           * It shouldn't show up if the list is non-existent
-           */
-          this.state.error ===
-          "This list was not found, please create it first" ? (
-            ""
-          ) : (
-            <Link
-              to={`/todox/new/${this.state.listname}`}
-              className={this.classes.fab}
-            >
-              <Fab color="primary" aria-label="Add a todo to this list">
-                <AddOutlined />
-              </Fab>
-            </Link>
-          )
-        }
       </div>
     )
   }
@@ -248,4 +265,4 @@ export default withStyles(theme => ({
     bottom: 25,
     right: 25,
   },
-}))(List)
+}))(Viewby)

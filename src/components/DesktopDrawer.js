@@ -250,7 +250,7 @@ class DesktopMenu extends React.Component {
                   Icon={PendingIcon}
                 />
                 <DrawerItem
-                  link="/todox/viewby/done"
+                  link="/todox/viewby/completed"
                   text="Done"
                   Icon={CheckIcon}
                 />

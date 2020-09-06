@@ -160,7 +160,7 @@ class TodoItem extends React.Component {
       <div className={this.props.classes.root}>
         <Accordion
           expanded={this.state.isOpen}
-          className={this.task.starred ? this.props.classes.starred : ""}
+          className={this.task.done ? this.props.classes.done : this.task.starred ? this.props.classes.starred : ""}
         >
           <AccordionSummary
             expandIcon={<ExpandMoreOutlined />}
@@ -219,6 +219,7 @@ class TodoItem extends React.Component {
           <Divider />
           <AccordionActions>
             <Button
+              disabled={this.task.done}
               startIcon={<DeleteOutlined />}
               size="small"
               onClick={this.handleDelete}
@@ -226,8 +227,9 @@ class TodoItem extends React.Component {
               Delete
             </Button>
 
-            <Link to={`/todox/edit/${this.task.id}`}>
+            <Link to={this.task.done ? "#" : `/todox/edit/${this.task.id}`}>
               <Button
+                disabled={this.task.done}
                 startIcon={<EditOutlined />}
                 size="small"
                 color="secondary"
@@ -236,6 +238,7 @@ class TodoItem extends React.Component {
               </Button>
             </Link>
             <Button
+              disabled={this.task.done}
               startIcon={<CheckOutlined />}
               size="small"
               color="primary"
@@ -284,6 +287,9 @@ export default withStyles(theme => ({
   },
   starred: {
     borderLeft: "3px solid yellow",
+  },
+  done: {
+    borderLeft: "3px solid #4caf50",
   },
   reminderTiming: {
     minWidth: "fit-content",

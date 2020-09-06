@@ -52,7 +52,7 @@ let TodoList = props => {
   )
 }
 
-class List extends React.Component {
+class Starred extends React.Component {
   /**
    * This component is the actual 'list' where all the individual
    * components are rendered.
@@ -114,7 +114,7 @@ class List extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.match.params.id !== this.state.listname) {
-      this.updateListData(nextProps)
+      this.updateListData()
       return false
     } else {
       if (this.state !== nextState) {
@@ -230,4 +230,4 @@ export default withStyles(theme => ({
     bottom: 25,
     right: 25,
   },
-}))(List)
+}))(Starred)

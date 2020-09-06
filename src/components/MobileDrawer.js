@@ -297,7 +297,7 @@ class MobileMenu extends React.Component {
                 <DrawerItem
                 className={this.props.classes.a}
                   handleDrawer={this.handleDrawerToggle}
-                  link="/todox/viewby/done"
+                  link="/todox/viewby/completed"
                   text="Done"
                   Icon={CheckIcon}
                 />

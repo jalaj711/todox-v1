@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      uses: s0/git-publish-subdir-action@develop
+    - uses: s0/git-publish-subdir-action@develop
       env:
         REPO: git@github.com:codegods/todox.git
         BRANCH: gh-pages

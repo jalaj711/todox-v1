@@ -186,7 +186,11 @@ class TodoItem extends React.Component {
               </Typography>
               <br />
               <div className={this.props.classes.description}>
-                {this.task.description || <i>No description provided</i>}
+                {this.task.description ? this.task.description.split('\n').map((item) => (
+                  <div>
+                  {item}<br/>
+                  </div>
+                )) : (<i>No description provided</i>)}
               </div>
             </div>
             <div className={this.props.classes.othDetails}>

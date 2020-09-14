@@ -18,8 +18,6 @@ let Starred = React.lazy(() => import("./starred"))
 let Edit = React.lazy(() => import("./edit"))
 let ViewBy = React.lazy(() => import("./viewby"))
 
-const drawerWidth = 240
-
 class Home extends React.Component {
   constructor(props) {
     super(props)
@@ -77,9 +75,6 @@ export default withStyles(theme => ({
   },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
-  drawerPaper: {
-    width: drawerWidth,
-  },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),

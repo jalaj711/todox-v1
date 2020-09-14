@@ -213,7 +213,6 @@ class MobileMenu extends React.Component {
               aria-label="open drawer"
               edge="start"
               onClick={this.handleDrawerToggle}
-              className={this.props.classes.menuButton}
             >
               <MenuIcon />
             </IconButton>
@@ -232,7 +231,7 @@ class MobileMenu extends React.Component {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <nav className={this.props.classes.drawer}>
+        <nav>
           <Drawer
             variant="temporary"
             anchor="left"
@@ -395,20 +394,8 @@ class MobileMenu extends React.Component {
 }
 
 export default withStyles(theme => ({
-
-  drawer: {
-    
-    [theme.breakpoints.up("sm")]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
   appBar: {
     background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-    [theme.breakpoints.up("sm")]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
   },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,

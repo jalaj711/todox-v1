@@ -23,6 +23,7 @@ import {
 import { Skeleton } from "@material-ui/lab"
 import {
   NotificationsNoneOutlined as BellIcon,
+  MenuOutlined as MenuIcon,
   StarBorderOutlined as StarIcon,
   CheckOutlined as CheckIcon,
   ClearOutlined as CrossIcon,
@@ -33,6 +34,7 @@ import {
   WorkOutline as WorkIcon,
   InfoOutlined as InfoIcon,
   AddOutlined as PlusIcon,
+  ChevronLeftOutlined as ChevronLeftIcon
 } from "@material-ui/icons"
 
 import { NavLink } from "react-router-dom"
@@ -74,6 +76,7 @@ class DesktopMenu extends React.Component {
       title: "todox",
       lists: [],
       dialogOpen: false,
+      off: true,
     }
     window.setTitle = title => {
       this.setState({ title })
@@ -178,7 +181,7 @@ class DesktopMenu extends React.Component {
       ...this.setState({
         ...this.state,
         dialogOpen: false,
-        addError: undefined
+        addError: undefined,
       }),
     })
   }
@@ -186,8 +189,25 @@ class DesktopMenu extends React.Component {
   render() {
     return (
       <div>
-        <AppBar position="fixed" className={this.props.classes.appBar}>
+        <AppBar
+          position="fixed"
+          className={`${this.props.classes.appBar} ${
+            this.state.off ? "" : this.props.classes.appBarOn
+          }`}
+        >
           <Toolbar>
+            {this.state.off ? (
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={() => this.setState({ ...this.state, off: false })}
+              >
+                <MenuIcon />
+              </IconButton>
+            ) : (
+              ""
+            )}
             <Typography variant="h6" noWrap>
               {this.state.title}
             </Typography>
@@ -204,16 +224,30 @@ class DesktopMenu extends React.Component {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <nav className={this.props.classes.drawer}>
+        <nav
+          className={`${this.props.classes.drawer} ${
+            this.state.off ? "" : this.props.classes.drawerOn
+          }`}
+        >
           <Drawer
             classes={{
-              paper: this.props.classes.drawerPaper,
+              paper: `${
+                this.state.off ? this.props.classes.drawerPaperOff : ""
+              } ${this.props.classes.drawerPaper}`,
             }}
             variant="permanent"
             open
           >
             <div>
-              <div className={this.props.classes.toolbar} />
+              <div className={this.props.classes.toolbar}>
+                <IconButton
+                  color="inherit"
+                  aria-label="close drawer"
+                  onClick={() => this.setState({ ...this.state, off: true })}
+                >
+                  <ChevronLeftIcon />
+                </IconButton>
+              </div>
               <Divider />
               <List>
                 <DrawerItem
@@ -348,22 +382,28 @@ export default withStyles(theme => ({
     "& a": {
       color: theme.palette.text.primary,
     },
-    [theme.breakpoints.up("sm")]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
+  },
+  drawerOn: {
+    width: drawerWidth,
+    flexShrink: 0,
   },
   appBar: {
     background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-    [theme.breakpoints.up("sm")]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
+    transition: theme.transitions.create("width"),
+  },
+  appBarOn: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
   },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
+    left: 0,
+    transition: theme.transitions.create("left"),
+  },
+  drawerPaperOff: {
+    left: -drawerWidth,
   },
   grow: {
     flexGrow: 1,

@@ -1,7 +1,7 @@
 import React, { Suspense } from "react"
 import { withStyles } from "@material-ui/core/styles"
 import { Backdrop, CircularProgress } from "@material-ui/core"
-import { Switch, Route } from "react-router-dom"
+import { Switch, Route, Redirect } from "react-router-dom"
 import Snackbar from "../components/Snackbar"
 import Confirm from "../components/Confirm"
 import theme from "../theme"
@@ -61,6 +61,7 @@ class Home extends React.Component {
               <Route path="/todox/starred" component={Starred} />
               <Route path="/todox/edit/:id" component={Edit} />
               <Route path="/todox/viewby/:id" component={ViewBy} />
+              <Redirect to="/todox" />
             </Switch>
           </main>
         </Suspense>

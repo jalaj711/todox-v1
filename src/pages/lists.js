@@ -7,7 +7,7 @@ import { Skeleton } from "@material-ui/lab"
 import diff from "date-fns/differenceInMinutes"
 
 /**
- * Lazy load the TodoItem component becaus the list may be empty
+ * Lazy load the TodoItem component because the list may be empty
  * or it may even not exist
  */
 let TodoItem = React.lazy(() => import("../components/TodoItem"))

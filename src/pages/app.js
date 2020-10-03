@@ -18,11 +18,18 @@ let Starred = React.lazy(() => import("./starred"))
 let Edit = React.lazy(() => import("./edit"))
 let ViewBy = React.lazy(() => import("./viewby"))
 
+const SimpleLoader = () => (
+  <Backdrop open={true}>
+    <CircularProgress />
+  </Backdrop>
+)
+
 class Home extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       isMobile: window.innerWidth < theme.breakpoints.values.sm,
+      isLoadingDb: true,
     }
   }
 
@@ -36,20 +43,35 @@ class Home extends React.Component {
       }
       prevVal = window.innerWidth
     })
+
+    /**
+     * This creates a database if one does not exist and then adds it to 
+     * the window for global access.
+     */
+    if (!window.database) {
+      import("../database").then(database => {
+        console.log("[indexedDB] Creating database instance")
+        let db = new database.default();
+        db.onsuccess = _evt => {
+          window.database = db
+          this.setState({ isLoadingDb: false })
+        }
+      })
+    }
   }
 
   render() {
+    const { isLoadingDb } = this.state;
+
+    if (isLoadingDb) {
+      return <SimpleLoader />
+    }
+
     return (
       <div className={this.props.classes.root}>
         <Snackbar />
         <Confirm />
-        <Suspense
-          fallback={
-            <Backdrop open={true}>
-              <CircularProgress />
-            </Backdrop>
-          }
-        >
+        <Suspense fallback={<SimpleLoader />}>
           {this.state.isMobile ? <MobileDrawer /> : <DesktopDrawer />}
 
           <main className={this.props.classes.content}>

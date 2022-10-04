@@ -112,7 +112,7 @@ class List extends React.Component {
             error:
               tasks.length === 0 ? "You have no tasks in this list yet" : null,
             loaded: true,
-            tasks: tasks,
+            tasks: tasks, 
             listname: listname,
           })
         }
@@ -231,8 +231,8 @@ export default withStyles(theme => ({
     marginTop: 8,
   },
   icon: {
-    width: "60%",
-    height: "60%",
+    width: "40%",
+    height: "40%",
   },
   error: {
     width: "-webkit-fill-available",
@@ -242,6 +242,7 @@ export default withStyles(theme => ({
     background: "transparent",
     opacity: 0.7,
     textAlign: "center",
+    margin: "auto"
   },
   fab: {
     position: "fixed",

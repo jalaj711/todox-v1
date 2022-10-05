@@ -20,7 +20,8 @@ import sub from "date-fns/sub"
 import isPast from "date-fns/isPast"
 import dateDelta from "date-fns/differenceInDays"
 import { showSnackbar } from '../redux/snackbarSlice'
-import { compose, connect } from 'react-redux'
+import { compose } from 'recompose/compose'
+import { connect } from 'react-redux'
 //import { Link } from "react-router-dom"
 
 class EditTask extends React.Component {

@@ -166,7 +166,7 @@ class db {
       data = { ...data, ...newData }
 
       objectStore.put(data).onsuccess = evt => {
-        if (onsuccess) onsuccess()
+        if (onsuccess) onsuccess(evt)
       }
     }
   }

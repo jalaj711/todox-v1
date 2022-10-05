@@ -128,7 +128,7 @@ class EditTask extends React.Component {
       nameError: false,
       dateError: false,
     })
-    if (!document.getElementById("task-title").value) {
+    if (!document.getElementById("task-edit-title").value) {
       this.setState({
         ...this.state,
         nameError: "Please enter a title for the task",
@@ -216,16 +216,17 @@ class EditTask extends React.Component {
           window.database.update(
             "tasks",
             this.taskID,
-            todo
-          ).onsuccess = evt => {
-            if (evt.target.result) {
-              window.snackbar.show({
-                text: `Updated todo.`,
-                showActionButton: false,
-              })
-              this.props.history.goBack()
+            todo,
+            (evt) => {
+              if (evt.target.result) {
+                window.snackbar.show({
+                  text: `Updated todo.`,
+                  showActionButton: false,
+                })
+                this.props.history.goBack()
+              }
             }
-          }
+          )
         }
       )
     })

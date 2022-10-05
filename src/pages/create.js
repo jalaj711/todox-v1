@@ -17,6 +17,8 @@ import DateFnsUtils from "@date-io/date-fns"
 import sub from "date-fns/sub"
 import isPast from "date-fns/isPast"
 import dateDelta from "date-fns/differenceInDays"
+import { showSnackbar } from '../redux/snackbarSlice'
+import { compose, connect } from 'react-redux'
 //import { Link } from "react-router-dom"
 
 class CreateNew extends React.Component {
@@ -187,12 +189,10 @@ class CreateNew extends React.Component {
   }
 
   createTodo(date, delta) {
-    if (window.snackbar) {
-      window.snackbar.show({
-        text: "Creating todo...",
-        showActionButton: false,
-      })
-    }
+    this.props.showSnackbar({
+      text: "Creating todo...",
+      showActionButton: false,
+    })
 
     import("../todo_template").then(todo_template => {
       let todo = new todo_template.default.Todo({
@@ -208,7 +208,7 @@ class CreateNew extends React.Component {
       }, () => {
         window.database.add("tasks", todo).onsuccess = (evt) => {
           if(evt.target.result){
-            window.snackbar.show({
+            this.props.showSnackbar({
               text: `Created todo.`,
               showActionButton: false,
             })
@@ -353,10 +353,7 @@ class CreateNew extends React.Component {
   }
 }
 
-/**
- * Get the list styled and export it.
- */
-export default withStyles(theme => ({
+const styles = theme => ({
   root: {
     display: "block",
     maxHeight: "calc(85vh - 70px)"
@@ -429,4 +426,14 @@ export default withStyles(theme => ({
       width: "-webkit-fill-available",
     },
   },
-}))(CreateNew)
+})
+
+const mapDispatchToProps = { showSnackbar }
+
+/**
+ * Append the redux actions, get the list styled and export it.
+ */
+export default compose(
+  withStyles(styles),
+  connect(mapDispatchToProps)
+)(CreateNew)

@@ -5,48 +5,57 @@ import IconButton from "@material-ui/core/IconButton"
 import CloseIcon from "@material-ui/icons/Close"
 
 export default function CustomSnackbar() {
-  const [state, setState] = React.useState({
-    open: false,
-    text: "Snackbar text",
-    showActionButton: false,
-    actionButtonText: "undo",
-    actionButtonClickCallback: null,
-  })
+  // TODO: get the following from the Redux store:
+  // const snackbarState = store.Snackbar
+  // const {
+  //   open,
+  //   text,
+  //   showActionButton,
+  //   actionButtonText,
+  //   actionButtonClickCallback
+  // } = snackbarState
 
-  window.snackbar = {
-    show: ({
-      text = "Snackbar text",
-      actionButtonText = null,
-      showActionButton = false,
-      actionButtonClickCallback = null,
-    }) => {
-      setState({
-        open: true,
-        text,
-        actionButtonClickCallback,
-        actionButtonText,
-        showActionButton,
-      })
-    },
-    close: (event, reason) => {
-      handleClose(event, reason)
-    },
+  const handleClose = (_evt, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    dispatch(closeSnackbar)
   }
+
+  // TODO: ROADKILL
+  // const [state, setState] = React.useState({
+  //   open: false,
+  //   text: "Snackbar text",
+  //   showActionButton: false,
+  //   actionButtonText: "undo",
+  //   actionButtonClickCallback: null,
+  // })
+
+  // window.snackbar = {
+  //   show: ({
+  //     text = "Snackbar text",
+  //     actionButtonText = null,
+  //     showActionButton = false,
+  //     actionButtonClickCallback = null,
+  //   }) => {
+  //     setState({
+  //       open: true,
+  //       text,
+  //       actionButtonClickCallback,
+  //       actionButtonText,
+  //       showActionButton,
+  //     })
+  //   },
+  //   close: (event, reason) => {
+  //     handleClose(event, reason)
+  //   },
+  // }
 
   let click = evt => {
     handleClose()
     try {
       state.actionButtonClickCallback(evt)
     } catch (e) {}
-  }
-  let handleClose = (evt, reason) => {
-    if (reason === "clickaway") {
-      return
-    }
-    setState({
-      ...state,
-      open: false,
-    })
   }
 
   return (

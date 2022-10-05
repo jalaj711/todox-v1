@@ -1,7 +1,7 @@
 import React, { Suspense } from "react"
 import { withStyles } from "@material-ui/core/styles"
 import { Backdrop, CircularProgress } from "@material-ui/core"
-import { Switch, Route, Redirect } from "react-router-dom"
+import { Routes, Route, Navigate} from "react-router-dom"
 import Snackbar from "../components/Snackbar"
 import Confirm from "../components/Confirm"
 import theme from "../theme"
@@ -76,15 +76,15 @@ class Home extends React.Component {
 
           <main className={this.props.classes.content}>
             <div className={this.props.classes.toolbar} />
-            <Switch>
-              <Route path="/todox" exact component={Index} />
-              <Route path="/todox/lists/:id" component={Lists} />
-              <Route path="/todox/new/:id" component={Create} />
-              <Route path="/todox/starred" component={Starred} />
-              <Route path="/todox/edit/:id" component={Edit} />
-              <Route path="/todox/viewby/:id" component={ViewBy} />
-              <Redirect to="/todox" />
-            </Switch>
+            <Routes>
+              <Route path="/todox"  element={<Index />} />
+              <Route path="/todox/lists/:id" element={<Lists />} />
+              <Route path="/todox/new/:id" element={<Create />} />
+              <Route path="/todox/starred" element={<Starred />} />
+              <Route path="/todox/edit/:id" element={<Edit/>} />
+              <Route path="/todox/viewby/:id" element={<ViewBy/>} />
+              <Route path="*" element={<Navigate to='/todox'/>}/>
+            </Routes>
           </main>
         </Suspense>
       </div>

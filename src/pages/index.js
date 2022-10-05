@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from "@material-ui/core/styles"
-import { div } from "@material-ui/core"
+// import { div } from "@material-ui/core"
 
 class IndexPage extends React.Component {
     render(){

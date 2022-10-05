@@ -251,7 +251,7 @@ class EditTask extends React.Component {
                 autoComplete="off"
                 error={this.state.nameError ? true : false}
                 helperText={this.state.nameError || ""}
-                value={this.state.title}
+                defaultValue={this.state.title}
               />
               <TextField
                 className={this.classes.input}
@@ -259,7 +259,7 @@ class EditTask extends React.Component {
                 autoComplete="off"
                 id="task-edit-description"
                 label="Enter task details (Optional)"
-                value={this.state.description || ""}
+                defaultValue={this.state.description || ""}
                 multiline
               />
               <FormControl

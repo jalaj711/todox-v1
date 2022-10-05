@@ -19,8 +19,8 @@ import DateFnsUtils from "@date-io/date-fns"
 import sub from "date-fns/sub"
 import isPast from "date-fns/isPast"
 import dateDelta from "date-fns/differenceInDays"
-import { showSnackbar } from '../redux/snackbarSlice'
-import { compose } from 'recompose/compose'
+import { openSnackbar } from '../redux/snackbarSlice'
+import { compose } from 'recompose'
 import { connect } from 'react-redux'
 //import { Link } from "react-router-dom"
 
@@ -195,7 +195,7 @@ class EditTask extends React.Component {
   }
 
   updateTodo(date, delta) {
-    this.props.showSnackbar({
+    this.props.openSnackbar({
       text: "Updating todo...",
       showActionButton: false,
     })
@@ -220,7 +220,7 @@ class EditTask extends React.Component {
             todo,
             (evt) => {
               if (evt.target.result) {
-                this.props.showSnackbar({
+                this.props.openSnackbar({
                   text: `Updated todo.`,
                   showActionButton: false,
                 })
@@ -461,12 +461,12 @@ const styles = theme => ({
   },
 })
 
-const mapDispatchToProps = { showSnackbar }
+const mapDispatchToProps = { openSnackbar }
 
 /**
  * Append the redux actions, get the list styled and export it.
  */
 export default compose(
   withStyles(styles),
-  connect(mapDispatchToProps)
+  connect(null, mapDispatchToProps)
 )(EditTask)

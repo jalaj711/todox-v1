@@ -8,11 +8,11 @@ import { closeSnackbar } from "../redux/snackbarSlice"
 
 export default function CustomSnackbar() {
   const dispatch = useDispatch()
-  const open = useSelector((state) => state.open)
-  const text = useSelector((state) => state.text)
-  const showActionButton = useSelector((state) => state.showActionButton)
-  const actionButtonText = useSelector((state) => state.actionButtonText)
-  const actionButtonClickCallback = useSelector((state) => state.actionButtonClickCallback)
+  const open = useSelector((state) => state.snackbar.open)
+  const text = useSelector((state) => state.snackbar.text)
+  const showActionButton = useSelector((state) => state.snackbar.showActionButton)
+  const actionButtonText = useSelector((state) => state.snackbar.actionButtonText)
+  const actionButtonClickCallback = useSelector((state) => state.snackbar.actionButtonClickCallback)
 
   const handleClose = (_evt, reason) => {
     if (reason === "clickaway") {

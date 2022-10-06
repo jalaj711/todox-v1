@@ -1,0 +1,25 @@
+{
+  "short_name": "todox",
+  "name": "Todox - todos made simple",
+  "icons": [
+    {
+      "src": "icons/64x64.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "icons/192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons/512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/todox/lists/today",
+  "display": "standalone",
+  "theme_color": "#a5ce0f",
+  "background_color": "#ffffff"
+}

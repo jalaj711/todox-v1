@@ -3,50 +3,29 @@ import Button from "@material-ui/core/Button"
 import Snackbar from "@material-ui/core/Snackbar"
 import IconButton from "@material-ui/core/IconButton"
 import CloseIcon from "@material-ui/icons/Close"
+import { useDispatch, useSelector } from "react-redux"
+import { closeSnackbar } from "../redux/snackbarSlice"
 
 export default function CustomSnackbar() {
-  const [state, setState] = React.useState({
-    open: false,
-    text: "Snackbar text",
-    showActionButton: false,
-    actionButtonText: "undo",
-    actionButtonClickCallback: null,
-  })
+  const dispatch = useDispatch()
+  const open = useSelector((state) => state.snackbar.open)
+  const text = useSelector((state) => state.snackbar.text)
+  const showActionButton = useSelector((state) => state.snackbar.showActionButton)
+  const actionButtonText = useSelector((state) => state.snackbar.actionButtonText)
+  const actionButtonClickCallback = useSelector((state) => state.snackbar.actionButtonClickCallback)
 
-  window.snackbar = {
-    show: ({
-      text = "Snackbar text",
-      actionButtonText = null,
-      showActionButton = false,
-      actionButtonClickCallback = null,
-    }) => {
-      setState({
-        open: true,
-        text,
-        actionButtonClickCallback,
-        actionButtonText,
-        showActionButton,
-      })
-    },
-    close: (event, reason) => {
-      handleClose(event, reason)
-    },
+  const handleClose = (_evt, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    dispatch(closeSnackbar())
   }
 
   let click = evt => {
     handleClose()
     try {
-      state.actionButtonClickCallback(evt)
+      actionButtonClickCallback(evt)
     } catch (e) {}
-  }
-  let handleClose = (evt, reason) => {
-    if (reason === "clickaway") {
-      return
-    }
-    setState({
-      ...state,
-      open: false,
-    })
   }
 
   return (
@@ -56,15 +35,15 @@ export default function CustomSnackbar() {
           vertical: "bottom",
           horizontal: "left",
         }}
-        open={state.open}
+        open={open}
         autoHideDuration={4000}
         onClose={handleClose}
-        message={state.text}
+        message={text}
         action={
           <React.Fragment>
-            {state.showActionButton ? (
+            {showActionButton ? (
               <Button color="secondary" size="small" onClick={click}>
-                {state.actionButtonText}
+                {actionButtonText}
               </Button>
             ) : (
               ""

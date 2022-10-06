@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "0b0fca212f40cc1b0f8f2c32db5bbbc1",
+    "revision": "8e997cce2e9bdcd059a225c86c0d94d4",
     "url": "/todox-v1/index.html"
   },
   {
@@ -12,12 +12,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/todox-v1/static/js/1.0ab94eb5.chunk.js"
   },
   {
-    "revision": "957c69b7f81db988daac",
-    "url": "/todox-v1/static/js/10.82364aca.chunk.js"
+    "revision": "a460e23e0ca33e8e358a",
+    "url": "/todox-v1/static/js/10.749eb001.chunk.js"
   },
   {
-    "revision": "46fda3edbb153df262e5",
-    "url": "/todox-v1/static/js/11.9e7f835c.chunk.js"
+    "revision": "cc347a1615c60f577fbe",
+    "url": "/todox-v1/static/js/11.a62e400f.chunk.js"
   },
   {
     "revision": "d60cde81a0f5bba64773",
@@ -28,12 +28,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/todox-v1/static/js/13.e76955e1.chunk.js"
   },
   {
-    "revision": "7b24d0dbc0e9428d2446",
-    "url": "/todox-v1/static/js/14.345d0ae4.chunk.js"
+    "revision": "51b06583820e6c15b9e8",
+    "url": "/todox-v1/static/js/14.152e8edf.chunk.js"
   },
   {
-    "revision": "8b485f7c84bf33bb4080",
-    "url": "/todox-v1/static/js/15.85784751.chunk.js"
+    "revision": "cfabfe2d925e1edf28ce",
+    "url": "/todox-v1/static/js/15.228dc638.chunk.js"
   },
   {
     "revision": "3ce44eb2eae6e381cf6c",
@@ -52,8 +52,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/todox-v1/static/js/3.73a7a7a0.chunk.js"
   },
   {
-    "revision": "102b6d40558cf7c07e5f",
-    "url": "/todox-v1/static/js/4.a7df7a22.chunk.js"
+    "revision": "ae84692fd12c0cb71d73",
+    "url": "/todox-v1/static/js/4.5ebb3d20.chunk.js"
   },
   {
     "revision": "2d5e01376064aa789a28",
@@ -72,15 +72,15 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/todox-v1/static/js/9.c3035375.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "7de29d2340989317cdc0",
-    "url": "/todox-v1/static/js/main.7a00cfe5.chunk.js"
+    "revision": "93213b6a6ba9393771b4",
+    "url": "/todox-v1/static/js/main.850d034d.chunk.js"
   },
   {
-    "revision": "fd747cf0ad8581658a59",
-    "url": "/todox-v1/static/js/runtime-main.ce00f761.js"
+    "revision": "c474d396c74a314cfe57",
+    "url": "/todox-v1/static/js/runtime-main.0a561217.js"
   },
   {
     "url": "/todox/bg_offline.jpg",
-    "revision": "SmxquN8IDCqSnYTYCQoVyhgM"
+    "revision": "HudRxEKhq3k8NV6ooPMBNE2L"
   }
 ]);

@@ -251,27 +251,27 @@ class DesktopMenu extends React.Component {
               <Divider />
               <List>
                 <DrawerItem
-                  link="/todox/lists/today"
+                  link="/todox-v1/lists/today"
                   text="My Day"
                   Icon={DayIcon}
                 />
                 <DrawerItem
-                  link="/todox/starred"
+                  link="/todox-v1/starred"
                   text="Starred Tasks"
                   Icon={StarIcon}
                 />
                 <DrawerItem
-                  link="/todox/lists/bills"
+                  link="/todox-v1/lists/bills"
                   text="Bills"
                   Icon={BillsIcon}
                 />
                 <DrawerItem
-                  link="/todox/lists/shopping"
+                  link="/todox-v1/lists/shopping"
                   text="Shopping List"
                   Icon={ShoppingIcon}
                 />
                 <DrawerItem
-                  link="/todox/lists/work"
+                  link="/todox-v1/lists/work"
                   text="Work"
                   Icon={WorkIcon}
                 />
@@ -279,17 +279,17 @@ class DesktopMenu extends React.Component {
               <Divider />
               <List>
                 <DrawerItem
-                  link="/todox/viewby/pending"
+                  link="/todox-v1/viewby/pending"
                   text="Pending"
                   Icon={PendingIcon}
                 />
                 <DrawerItem
-                  link="/todox/viewby/completed"
+                  link="/todox-v1/viewby/completed"
                   text="Done"
                   Icon={CheckIcon}
                 />
                 <DrawerItem
-                  link="/todox/viewby/missing"
+                  link="/todox-v1/viewby/missing"
                   text="Missing"
                   Icon={CrossIcon}
                 />
@@ -308,7 +308,7 @@ class DesktopMenu extends React.Component {
                     this.state.lists.map(list => (
                       <DrawerItem
                         text={list.name}
-                        link={`/todox/lists/${list.id}`}
+                        link={`/todox-v1/lists/${list.id}`}
                         key={list.id}
                       />
                     ))

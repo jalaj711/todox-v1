@@ -198,7 +198,7 @@ class List extends React.Component {
             ""
           ) : (
             <Link
-              to={`/todox/new/${this.state.listname}`}
+              to={`/todox-v1/new/${this.state.listname}`}
               className={this.classes.fab}
             >
               <Fab color="primary" aria-label="Add a todo to this list">

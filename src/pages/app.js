@@ -77,12 +77,12 @@ class Home extends React.Component {
           <main className={this.props.classes.content}>
             <div className={this.props.classes.toolbar} />
             <Switch>
-              <Route path="/todox" exact component={Index} />
-              <Route path="/todox/lists/:id" component={Lists} />
-              <Route path="/todox/new/:id" component={Create} />
-              <Route path="/todox/starred" component={Starred} />
-              <Route path="/todox/edit/:id" component={Edit} />
-              <Route path="/todox/viewby/:id" component={ViewBy} />
+              <Route path="/todox-v1" exact component={Index} />
+              <Route path="/todox-v1/lists/:id" component={Lists} />
+              <Route path="/todox-v1/new/:id" component={Create} />
+              <Route path="/todox-v1/starred" component={Starred} />
+              <Route path="/todox-v1/edit/:id" component={Edit} />
+              <Route path="/todox-v1/viewby/:id" component={ViewBy} />
               <Redirect to="/todox" />
             </Switch>
           </main>

@@ -231,7 +231,7 @@ class TodoItem extends React.Component {
               Delete
             </Button>
 
-            <Link to={this.task.done ? "#" : `/todox/edit/${this.task.id}`}>
+            <Link to={this.task.done ? "#" : `/todox-v1/edit/${this.task.id}`}>
               <Button
                 disabled={this.task.done}
                 startIcon={<EditOutlined />}

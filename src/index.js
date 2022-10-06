@@ -5,6 +5,8 @@ import theme from "./theme"
 import * as serviceWorker from "./serviceWorker"
 import { BrowserRouter as Router } from "react-router-dom"
 import App from "./pages/app"
+import store from './redux/store'
+import { Provider } from 'react-redux'
 
 window.addEventListener("load", () => {
   if (navigator.onLine && window.location.pathname !== "/") {
@@ -26,8 +28,10 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <App />
+        <Provider store={store}>
+          <CssBaseline />
+          <App />
+        </Provider>
       </ThemeProvider>
     </Router>
   </React.StrictMode>,

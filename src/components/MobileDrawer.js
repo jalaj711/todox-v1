@@ -219,7 +219,7 @@ class MobileMenu extends React.Component {
             <Typography variant="h6" noWrap>
               {this.state.title}
             </Typography>
-            <div className={this.props.classes.grow} />
+            {/* <div className={this.props.classes.grow} />
             <IconButton
               edge="end"
               color="inherit"
@@ -228,7 +228,7 @@ class MobileMenu extends React.Component {
               <Badge badgeContent={6} color="primary" max={9}>
                 <BellIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
           </Toolbar>
         </AppBar>
         <nav>

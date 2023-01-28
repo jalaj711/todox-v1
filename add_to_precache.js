@@ -5,7 +5,7 @@ let precache_re = /precache-manifest\.[a-zA-Z0-9]*\.js/
 console.log("Starting patcher...")
 
 let urls_to_add = [
-    '/todox/bg_offline.jpg'
+    '/todox-v1/bg_offline.jpg'
 ]
 
 console.log("Adding following URLs to precache manifest.")

@@ -11,7 +11,6 @@ import {
   Divider,
   Toolbar,
   IconButton,
-  Badge,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -22,7 +21,6 @@ import {
 } from "@material-ui/core"
 import { Skeleton } from "@material-ui/lab"
 import {
-  NotificationsNoneOutlined as BellIcon,
   MenuOutlined as MenuIcon,
   StarBorderOutlined as StarIcon,
   CheckOutlined as CheckIcon,
